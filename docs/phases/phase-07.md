@@ -1,6 +1,6 @@
 # Phase 7 — Analytics Services and Recommendation Engine
 
-**Status:** Not started  
+**Status:** Complete  
 **Depends on:** [Phase 6](phase-06.md)  
 **Next:** [Phase 8](phase-08.md)
 
@@ -50,12 +50,12 @@ Recommendations must never be random or unsupported by metrics.
 
 ## Acceptance Criteria
 
-- [ ] KPI functions are pure/reusable and covered by tests
-- [ ] Same mart inputs → identical KPI outputs
-- [ ] Rate comparisons use percentage points
-- [ ] Every emitted recommendation includes required fields and a supporting KPI
-- [ ] No business calculations live in `app/` pages
-- [ ] Quality checks pass
+- [x] KPI functions are pure/reusable and covered by tests
+- [x] Same mart inputs → identical KPI outputs
+- [x] Rate comparisons use percentage points
+- [x] Every emitted recommendation includes required fields and a supporting KPI
+- [x] No business calculations live in `app/` pages
+- [x] Quality checks pass
 
 ## Verification Commands
 

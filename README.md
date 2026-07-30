@@ -64,9 +64,9 @@ Default reporting month: **December 2025**.
 
 ## Current Status
 
-**Phase 6 complete:** ETL pipeline producing dimensions, facts, and analytical marts with MoM/YoY/rolling/YTD comparisons.
+**Phase 7 complete:** reusable analytics KPI services and a deterministic recommendation engine (Finding → Impact → Action).
 
-Not yet implemented: analytics services, recommendation engine, or analytical Streamlit pages.
+Not yet implemented: Streamlit design system and analytical pages (Phases 8–9).
 
 ## Local Setup
 
