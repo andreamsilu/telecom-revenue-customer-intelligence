@@ -308,6 +308,10 @@ Business Rules
 
 One commit per completed phase.
 
+After each phase commit, push to the remote:
+
+git push -u origin HEAD
+
 Commit messages:
 
 feat:
