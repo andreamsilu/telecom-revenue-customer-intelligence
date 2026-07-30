@@ -96,24 +96,20 @@ def test_usage_and_recharge_generation_small_base() -> None:
     assert rural_voice > urban_voice
 
     youth_bundle_share = float(
-        
-            recharges.merge(
-                customers[["customer_id", "customer_segment"]], on="customer_id"
-            )
-            .loc[lambda df: df["customer_segment"] == "Youth", "recharge_type"]
-            .isin(["data bundle", "combo bundle"])
-            .mean()
-        
+        recharges.merge(
+            customers[["customer_id", "customer_segment"]], on="customer_id"
+        )
+        .loc[lambda df: df["customer_segment"] == "Youth", "recharge_type"]
+        .isin(["data bundle", "combo bundle"])
+        .mean()
     )
     rural_airtime_share = float(
-        
-            recharges.merge(
-                customers[["customer_id", "customer_segment"]], on="customer_id"
-            )
-            .loc[lambda df: df["customer_segment"] == "Rural", "recharge_type"]
-            .eq("airtime")
-            .mean()
-        
+        recharges.merge(
+            customers[["customer_id", "customer_segment"]], on="customer_id"
+        )
+        .loc[lambda df: df["customer_segment"] == "Rural", "recharge_type"]
+        .eq("airtime")
+        .mean()
     )
     assert youth_bundle_share > 0.40
     assert rural_airtime_share > 0.20

@@ -141,9 +141,7 @@ def iter_recharge_batches(
 ) -> Iterator[pd.DataFrame]:
     """Yield monthly recharge batches for memory-conscious persistence."""
     product_lookup: dict[str, dict[str, object]] = {
-        str(product_id): {
-            str(key): value for key, value in values.items()
-        }
+        str(product_id): {str(key): value for key, value in values.items()}
         for product_id, values in products.set_index("product_id")
         .to_dict(orient="index")
         .items()
