@@ -7,6 +7,7 @@ import streamlit as st
 
 from app.components.filters import FilterState
 from app.components.insight_panel import render_insight_panel
+from app.components.kpi_card import render_summary_cards
 from app.pages._common import (
     load_page_marts,
     page_recommendations,
@@ -35,16 +36,30 @@ def render_executive_recommendations(
     render_base_composition(marts, filters)
     recommendations = page_recommendations(marts, filters)
     st.subheader("KPI summary")
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Total recommendations", len(recommendations))
-    c2.metric(
-        "Critical",
-        sum(1 for r in recommendations if r.priority == "Critical"),
-    )
-    c3.metric("High", sum(1 for r in recommendations if r.priority == "High"))
-    c4.metric(
-        "Departments",
-        len({r.responsible_department for r in recommendations}),
+    render_summary_cards(
+        [
+            (
+                "Total recommendations",
+                f"{len(recommendations):,}",
+                "recommendation",
+            ),
+            (
+                "Critical",
+                str(sum(1 for r in recommendations if r.priority == "Critical")),
+                "churn",
+            ),
+            (
+                "High",
+                str(sum(1 for r in recommendations if r.priority == "High")),
+                "active",
+            ),
+            (
+                "Departments",
+                str(len({r.responsible_department for r in recommendations})),
+                "subscribers",
+            ),
+        ],
+        columns=4,
     )
 
     st.subheader("Priority queue")

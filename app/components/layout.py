@@ -61,6 +61,150 @@ def inject_theme_css() -> None:
             margin: 0.9rem 0;
             border-color: #D5E3DB;
         }
+
+        .trci-kpi-card {
+            background: #FFFFFF;
+            border: 1px solid #D5E3DB;
+            border-radius: 0.85rem;
+            padding: 0.95rem 1rem 0.85rem;
+            min-height: 8.25rem;
+            box-shadow: 0 1px 2px rgba(26, 31, 28, 0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            margin-bottom: 0.35rem;
+        }
+        .trci-kpi-card__head {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+        .trci-kpi-card__icon {
+            width: 2.1rem;
+            height: 2.1rem;
+            border-radius: 0.55rem;
+            background: #E8F0EC;
+            color: #0B6E4F;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .trci-kpi-card__icon svg {
+            width: 1.15rem;
+            height: 1.15rem;
+            display: block;
+        }
+        .trci-kpi-card__label {
+            color: #4A5A52;
+            font-size: 0.82rem;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+        .trci-kpi-card__value {
+            color: #1A1F1C;
+            font-size: 1.45rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+        .trci-kpi-card__delta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            width: fit-content;
+            border-radius: 999px;
+            padding: 0.18rem 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        .trci-kpi-card__arrow {
+            width: 0.85rem;
+            height: 0.85rem;
+            display: inline-flex;
+        }
+        .trci-kpi-card__arrow svg {
+            width: 100%;
+            height: 100%;
+        }
+        .trci-kpi-card__delta--up {
+            background: #E4F5EC;
+            color: #0B6E4F;
+        }
+        .trci-kpi-card__delta--down {
+            background: #FCE8E6;
+            color: #B42318;
+        }
+        .trci-kpi-card__delta--flat,
+        .trci-kpi-card__delta--muted {
+            background: #EEF2F0;
+            color: #4A5A52;
+        }
+
+        .trci-insight-card {
+            background: #FFFFFF;
+            border: 1px solid #D5E3DB;
+            border-radius: 0.9rem;
+            padding: 1rem 1.1rem;
+            box-shadow: 0 1px 2px rgba(26, 31, 28, 0.04);
+            margin-bottom: 0.75rem;
+        }
+        .trci-insight-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            align-items: center;
+            color: #4A5A52;
+            font-size: 0.8rem;
+            margin-bottom: 0.85rem;
+        }
+        .trci-insight-pill {
+            background: #E8F0EC;
+            color: #0B6E4F;
+            border-radius: 999px;
+            padding: 0.15rem 0.6rem;
+            font-weight: 700;
+        }
+        .trci-insight-row {
+            display: flex;
+            gap: 0.7rem;
+            margin-bottom: 0.75rem;
+        }
+        .trci-insight-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            background: #E8F0EC;
+            color: #0B6E4F;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .trci-insight-icon svg {
+            width: 1.05rem;
+            height: 1.05rem;
+        }
+        .trci-insight-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #0B6E4F;
+            margin-bottom: 0.15rem;
+        }
+        .trci-insight-text {
+            color: #1A1F1C;
+            font-size: 0.95rem;
+            line-height: 1.45;
+        }
+        .trci-insight-foot {
+            color: #4A5A52;
+            font-size: 0.78rem;
+            border-top: 1px solid #E8F0EC;
+            padding-top: 0.65rem;
+            margin-top: 0.25rem;
+        }
         </style>
         """,
         unsafe_allow_html=True,
