@@ -3,8 +3,13 @@
 from __future__ import annotations
 
 import streamlit as st
+
 from app.components.filters import render_global_filters
-from app.components.layout import inject_theme_css, render_empty_state
+from app.components.layout import (
+    inject_theme_css,
+    render_empty_state,
+    render_sidebar_brand,
+)
 from app.pages.campaign_analytics import render_campaign_analytics
 from app.pages.churn_retention import render_churn_retention
 from app.pages.executive_overview import render_executive_overview
@@ -42,15 +47,15 @@ def main() -> None:
     settings = load_settings()
     profile = settings.profile_name
 
-    st.sidebar.markdown(f"## {settings.project_name}")
-    st.sidebar.caption(f"Profile: `{profile}` · Synthetic Tanzanian telecom data")
-    st.sidebar.markdown("### Navigate")
+    render_sidebar_brand(project_name=settings.project_name, profile=profile)
     page = st.sidebar.radio(
         "Page",
         list(PAGES.keys()),
         index=0,
         label_visibility="collapsed",
     )
+    st.sidebar.divider()
+    st.sidebar.caption("Filters are at the top of each page.")
 
     if not marts_available(profile):
         render_empty_state(
