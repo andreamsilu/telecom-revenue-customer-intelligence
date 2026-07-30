@@ -4,13 +4,16 @@ from __future__ import annotations
 
 import streamlit as st
 from src.analytics.domain import recharge_kpi_cards
+from src.analytics.filter_views import regional_month_slice
 
 from app.components.charts import render_metric_trend, render_regional_metric_bar
 from app.components.filters import FilterState
 from app.pages._common import (
     load_page_marts,
+    render_base_composition,
     render_top_insight,
     safe_kpi_section,
+    to_selection,
     trend_frame,
 )
 from app.services.data_loader import FilterOptions
@@ -25,6 +28,7 @@ def render_recharge_analytics(
     """Render recharge KPIs, trends, and regional recharge value."""
     marts = load_page_marts(
         options,
+        filters,
         profile_name=profile_name,
         title="Recharge Analytics",
         subtitle="Top-up frequency, value, and cash-in intensity.",
@@ -32,6 +36,8 @@ def render_recharge_analytics(
     if marts is None:
         return
 
+    selection = to_selection(filters)
+    render_base_composition(marts, filters)
     safe_kpi_section(
         "KPI summary",
         lambda: recharge_kpi_cards(marts.recharge, filters.reporting_month),
@@ -57,12 +63,8 @@ def render_recharge_analytics(
         )
 
     st.subheader("Regional comparison")
-    month = filters.reporting_month
-    frame = marts.regional[marts.regional["reporting_month"].astype(str) == month]
-    if filters.regions:
-        frame = frame[frame["region"].isin(filters.regions)]
     render_regional_metric_bar(
-        frame,
+        regional_month_slice(marts.regional, selection),
         value_col="recharge_value",
         title="Regional recharge value",
         value_label="Recharge value (TZS)",

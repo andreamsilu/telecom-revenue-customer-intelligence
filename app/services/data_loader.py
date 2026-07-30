@@ -15,7 +15,7 @@ from src.generator.io import read_frame
 
 @dataclass(frozen=True)
 class MartBundle:
-    """Processed marts required by the Executive Overview."""
+    """Processed marts required by dashboard pages."""
 
     executive: pd.DataFrame
     revenue: pd.DataFrame
@@ -26,6 +26,7 @@ class MartBundle:
     regional: pd.DataFrame
     campaign: pd.DataFrame
     segment: pd.DataFrame
+    customers: pd.DataFrame
 
 
 @dataclass(frozen=True)
@@ -54,6 +55,7 @@ def load_mart_bundle(profile_name: str = "development") -> MartBundle:
         regional=load_mart(settings, "regional_performance_mart"),
         campaign=load_mart(settings, "campaign_performance_mart"),
         segment=load_mart(settings, "value_segment_monthly_mart"),
+        customers=_load_dim_customer(settings),
     )
 
 
@@ -64,7 +66,9 @@ def load_filter_options(profile_name: str = "development") -> FilterOptions:
     executive = load_mart(settings, "executive_kpi_mart")
     months = sorted(executive["reporting_month"].astype(str).unique().tolist())
     regions = _distinct_from_dim(settings, "dim_customer", "region")
-    segments = _distinct_from_dim(settings, "dim_customer", "customer_segment")
+    segments = _distinct_from_mart(
+        settings, "value_segment_monthly_mart", "value_segment"
+    )
     accounts = _distinct_from_dim(settings, "dim_customer", "account_type")
     products = _distinct_from_dim(settings, "dim_product", "product_category")
     paths = tuple(
@@ -95,6 +99,35 @@ def marts_available(profile_name: str = "development") -> bool:
 
 def _settings(profile_name: str) -> AppSettings:
     return load_settings(profile_name=profile_name)  # type: ignore[arg-type]
+
+
+def _load_dim_customer(settings: AppSettings) -> pd.DataFrame:
+    path = processed_path(settings, "dim_customer")
+    if not path.exists():
+        return pd.DataFrame()
+    frame = read_frame(path)
+    cols = [
+        c
+        for c in (
+            "customer_id",
+            "region",
+            "value_segment",
+            "account_type",
+            "customer_segment",
+        )
+        if c in frame.columns
+    ]
+    return frame[cols].copy()
+
+
+def _distinct_from_mart(settings: AppSettings, name: str, column: str) -> list[str]:
+    path = processed_path(settings, name)
+    if not path.exists():
+        return []
+    frame = read_frame(path)
+    if column not in frame.columns:
+        return []
+    return sorted(frame[column].dropna().astype(str).unique().tolist())
 
 
 def _distinct_from_dim(settings: AppSettings, name: str, column: str) -> list[str]:

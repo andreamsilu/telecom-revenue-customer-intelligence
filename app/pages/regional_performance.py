@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import streamlit as st
-from src.analytics.breakdowns import regional_revenue_slice
 from src.analytics.campaign_regional import regional_kpi_cards
+from src.analytics.filter_views import apply_regional_filter, regional_month_slice
 
 from app.components.charts import (
     render_metric_trend,
@@ -14,8 +14,10 @@ from app.components.charts import (
 from app.components.filters import FilterState
 from app.pages._common import (
     load_page_marts,
+    render_base_composition,
     render_top_insight,
     safe_kpi_section,
+    to_selection,
     trend_frame,
 )
 from app.services.data_loader import FilterOptions
@@ -30,6 +32,7 @@ def render_regional_performance(
     """Render regional KPIs, trends for a focus region, and comparisons."""
     marts = load_page_marts(
         options,
+        filters,
         profile_name=profile_name,
         title="Regional Performance",
         subtitle="Geographic revenue, subscribers, and ARPU differences.",
@@ -37,21 +40,25 @@ def render_regional_performance(
     if marts is None:
         return
 
+    selection = to_selection(filters)
+    render_base_composition(marts, filters)
+    regional_all = apply_regional_filter(marts.regional, selection)
+
     safe_kpi_section(
         "KPI summary",
-        lambda: regional_kpi_cards(marts.regional, filters.reporting_month),
+        lambda: regional_kpi_cards(regional_all, filters.reporting_month),
     )
 
     st.subheader("Trend analysis")
     focus_regions = (
-        filters.regions
-        or sorted(marts.regional["region"].dropna().astype(str).unique().tolist())[:1]
+        list(selection.regions)
+        or sorted(regional_all["region"].dropna().astype(str).unique().tolist())[:1]
     )
     focus = focus_regions[0] if focus_regions else None
     if focus:
-        regional_trend = marts.regional[marts.regional["region"].astype(str) == focus]
+        regional_trend = regional_all[regional_all["region"].astype(str) == focus]
         regional_trend = trend_frame(regional_trend, filters)
-        st.caption(f"Trends for focus region: **{focus}** (select in filters).")
+        st.caption(f"Trends for focus region: **{focus}**")
         left, right = st.columns(2)
         with left:
             render_metric_trend(
@@ -72,11 +79,7 @@ def render_regional_performance(
         st.warning("No region available for trend analysis.")
 
     st.subheader("Regional comparison")
-    sliced = regional_revenue_slice(
-        marts.regional,
-        reporting_month=filters.reporting_month,
-        regions=filters.regions or None,
-    )
+    sliced = regional_month_slice(marts.regional, selection)
     c1, c2 = st.columns(2)
     with c1:
         render_regional_bar(sliced)

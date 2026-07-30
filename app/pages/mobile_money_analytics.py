@@ -3,15 +3,17 @@
 from __future__ import annotations
 
 import streamlit as st
-from src.analytics.breakdowns import revenue_by_value_segment
 from src.analytics.domain import mobile_money_kpi_cards
+from src.analytics.filter_views import segment_month_slice
 
 from app.components.charts import render_metric_trend, render_segment_bar
 from app.components.filters import FilterState
 from app.pages._common import (
     load_page_marts,
+    render_base_composition,
     render_top_insight,
     safe_kpi_section,
+    to_selection,
     trend_frame,
 )
 from app.services.data_loader import FilterOptions
@@ -26,6 +28,7 @@ def render_mobile_money_analytics(
     """Render mobile money KPIs, trends, and segment context."""
     marts = load_page_marts(
         options,
+        filters,
         profile_name=profile_name,
         title="Mobile Money Analytics",
         subtitle="Active users, fee revenue, and transaction reliability.",
@@ -33,6 +36,8 @@ def render_mobile_money_analytics(
     if marts is None:
         return
 
+    selection = to_selection(filters)
+    render_base_composition(marts, filters)
     safe_kpi_section(
         "KPI summary",
         lambda: mobile_money_kpi_cards(marts.mobile_money, filters.reporting_month),
@@ -58,11 +63,5 @@ def render_mobile_money_analytics(
         )
 
     st.subheader("Segment comparison")
-    st.caption(
-        "Value-segment revenue mix provides wallet-adjacent monetisation context "
-        "alongside mobile money KPIs."
-    )
-    render_segment_bar(
-        revenue_by_value_segment(marts.segment, reporting_month=filters.reporting_month)
-    )
+    render_segment_bar(segment_month_slice(marts.segment, selection))
     render_top_insight(marts, filters, module=None)

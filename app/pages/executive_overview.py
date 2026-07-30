@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 import streamlit as st
-from src.analytics.breakdowns import (
-    filter_month_range,
-    regional_revenue_slice,
-    revenue_by_value_segment,
-)
 from src.analytics.executive import executive_kpi_cards
-from src.recommendations import generate_recommendations
+from src.analytics.filter_views import (
+    regional_month_slice,
+    scoped_revenue_kpis,
+    scoped_revenue_trend,
+    segment_month_slice,
+)
 
 from app.components.charts import (
     render_regional_bar,
@@ -20,12 +20,13 @@ from app.components.charts import (
 from app.components.filters import FilterState
 from app.components.insight_panel import render_insight_panel
 from app.components.kpi_card import render_kpi_cards
-from app.components.layout import (
-    render_data_freshness,
-    render_empty_state,
-    render_page_header,
+from app.pages._common import (
+    load_page_marts,
+    page_recommendations,
+    render_base_composition,
+    to_selection,
 )
-from app.services.data_loader import FilterOptions, MartBundle, load_mart_bundle
+from app.services.data_loader import FilterOptions, MartBundle
 
 
 def render_executive_overview(
@@ -35,45 +36,39 @@ def render_executive_overview(
     profile_name: str = "development",
 ) -> None:
     """Render the Executive Overview page using analytics services."""
-    render_page_header(
-        "Executive Overview",
-        "National headline KPIs, trends, and metric-supported recommendations.",
+    marts = load_page_marts(
+        options,
+        filters,
+        profile_name=profile_name,
+        title="Executive Overview",
+        subtitle=(
+            "National headline KPIs, trends, and metric-supported recommendations."
+        ),
     )
-    render_data_freshness(list(options.mart_paths))
-
-    try:
-        marts = load_mart_bundle(profile_name)
-    except FileNotFoundError as exc:
-        render_empty_state(
-            f"{exc} Run `python -m scripts.run_pipeline --profile {profile_name}` "
-            "before launching the dashboard."
-        )
+    if marts is None:
         return
 
-    _render_kpis(marts, filters)
-    _render_trends(marts, filters)
-    _render_comparisons(marts, filters)
-    _render_recommendations(marts, filters)
+    selection = to_selection(filters)
+    render_base_composition(marts, filters)
 
-
-def _render_kpis(marts: MartBundle, filters: FilterState) -> None:
     st.subheader("KPI summary")
     try:
-        cards = executive_kpi_cards(marts.executive, filters.reporting_month)
-    except KeyError:
-        render_empty_state(
-            f"No executive KPIs for reporting month {filters.reporting_month}."
+        national = executive_kpi_cards(marts.executive, filters.reporting_month)
+        cards = scoped_revenue_kpis(
+            national_cards=national,
+            regional_mart=marts.regional,
+            selection=selection,
         )
+    except KeyError:
+        st.warning(f"No executive KPIs for {filters.reporting_month}.")
         return
-    render_kpi_cards(cards, columns=5)
+    render_kpi_cards(cards, columns=min(5, len(cards)))
 
-
-def _render_trends(marts: MartBundle, filters: FilterState) -> None:
     st.subheader("Trend analysis")
-    trend = filter_month_range(
-        marts.executive,
-        start_month=filters.start_month,
-        end_month=filters.end_month,
+    trend = scoped_revenue_trend(
+        national_mart=marts.executive,
+        regional_mart=marts.regional,
+        selection=selection,
     )
     left, right = st.columns(2)
     with left:
@@ -81,45 +76,19 @@ def _render_trends(marts: MartBundle, filters: FilterState) -> None:
     with right:
         render_subscriber_mix(trend)
 
-
-def _render_comparisons(marts: MartBundle, filters: FilterState) -> None:
     st.subheader("Regional and segment comparison")
-    left, right = st.columns(2)
-    with left:
-        regional = regional_revenue_slice(
-            marts.regional,
-            reporting_month=filters.reporting_month,
-            regions=filters.regions or None,
-        )
-        render_regional_bar(regional)
-    with right:
-        segments = revenue_by_value_segment(
-            marts.segment,
-            reporting_month=filters.reporting_month,
-        )
-        render_segment_bar(segments)
+    c1, c2 = st.columns(2)
+    with c1:
+        render_regional_bar(regional_month_slice(marts.regional, selection))
+    with c2:
+        render_segment_bar(segment_month_slice(marts.segment, selection))
+
+    _render_recommendations(marts, filters)
 
 
 def _render_recommendations(marts: MartBundle, filters: FilterState) -> None:
-    recommendations = generate_recommendations(
-        reporting_month=filters.reporting_month,
-        executive_mart=marts.executive,
-        revenue_mart=marts.revenue,
-        subscriber_mart=marts.subscriber,
-        churn_mart=marts.churn,
-        recharge_mart=marts.recharge,
-        regional_mart=marts.regional,
-        campaign_mart=marts.campaign,
-    )
-    if filters.regions:
-        recommendations = [
-            rec
-            for rec in recommendations
-            if rec.supporting_filters.get("region") in filters.regions
-            or "region" not in rec.supporting_filters
-        ]
-    top = recommendations[0] if recommendations else None
-    render_insight_panel(top)
+    recommendations = page_recommendations(marts, filters)
+    render_insight_panel(recommendations[0] if recommendations else None)
     if len(recommendations) > 1:
         with st.expander(f"Additional recommendations ({len(recommendations) - 1})"):
             for rec in recommendations[1:6]:

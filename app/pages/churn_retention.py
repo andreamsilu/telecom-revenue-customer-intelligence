@@ -4,13 +4,16 @@ from __future__ import annotations
 
 import streamlit as st
 from src.analytics.domain import retention_kpi_cards
+from src.analytics.filter_views import regional_month_slice
 
 from app.components.charts import render_metric_trend, render_regional_metric_bar
 from app.components.filters import FilterState
 from app.pages._common import (
     load_page_marts,
+    render_base_composition,
     render_top_insight,
     safe_kpi_section,
+    to_selection,
     trend_frame,
 )
 from app.services.data_loader import FilterOptions
@@ -25,6 +28,7 @@ def render_churn_retention(
     """Render churn KPIs, trends, and regional churn context."""
     marts = load_page_marts(
         options,
+        filters,
         profile_name=profile_name,
         title="Churn and Retention",
         subtitle="Churn rate, revenue at risk, and high-value losses.",
@@ -32,6 +36,8 @@ def render_churn_retention(
     if marts is None:
         return
 
+    selection = to_selection(filters)
+    render_base_composition(marts, filters)
     safe_kpi_section(
         "KPI summary",
         lambda: retention_kpi_cards(marts.churn, filters.reporting_month),
@@ -57,14 +63,8 @@ def render_churn_retention(
         )
 
     st.subheader("Regional comparison")
-    month = filters.reporting_month
-    churn_reg = marts.regional[
-        marts.regional["reporting_month"].astype(str) == month
-    ].copy()
-    if filters.regions:
-        churn_reg = churn_reg[churn_reg["region"].isin(filters.regions)]
     render_regional_metric_bar(
-        churn_reg,
+        regional_month_slice(marts.regional, selection),
         value_col="newly_churned",
         title="Newly churned customers by region",
         value_label="Newly churned",

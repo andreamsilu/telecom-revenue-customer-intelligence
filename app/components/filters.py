@@ -9,7 +9,7 @@ import streamlit as st
 from src.config.settings import AppSettings
 
 # Bump when default/filter shape changes so stale Streamlit sessions reset.
-_FILTER_SCHEMA_VERSION = 2
+_FILTER_SCHEMA_VERSION = 3
 
 
 @dataclass
@@ -69,6 +69,8 @@ def render_global_filters(
     _ensure_session_filters(defaults)
 
     current = FilterState(**st.session_state["filters"])
+    # Drop stale segment values after schema migration to value_segment.
+    current.segments = [s for s in current.segments if s in segments]
     if current.reporting_month not in month_options:
         current.reporting_month = defaults.reporting_month
     if current.start_month not in month_options:
@@ -103,7 +105,6 @@ def render_global_filters(
             start_month = end_month = month_options[0]
             st.caption(f"Trend range: {labels[start_month]}")
         else:
-            # Keep trend end aligned when the reporting month changes.
             end_default = (
                 reporting_month
                 if reporting_month != current.reporting_month
@@ -123,25 +124,28 @@ def render_global_filters(
             start_month = value_by_label[start_label]
             end_month = value_by_label[end_label]
 
-    with st.expander("Segment filters (optional — empty means all)", expanded=False):
+    with st.expander("Dimension filters (optional — empty means all)", expanded=False):
         c1, c2, c3, c4 = st.columns(4)
         with c1:
             selected_regions = st.multiselect(
                 "Region",
                 options=regions,
                 default=[r for r in current.regions if r in regions],
+                help="Scopes regional charts and revenue/subscriber KPIs.",
             )
         with c2:
             selected_segments = st.multiselect(
-                "Customer segment",
+                "Value segment",
                 options=segments,
                 default=[s for s in current.segments if s in segments],
+                help="Filters value-segment charts and base composition.",
             )
         with c3:
             selected_accounts = st.multiselect(
                 "Account type",
                 options=account_types,
                 default=[a for a in current.account_types if a in account_types],
+                help="Applied to customer-base composition from dim_customer.",
             )
         with c4:
             selected_products = st.multiselect(
@@ -150,6 +154,7 @@ def render_global_filters(
                 default=[
                     p for p in current.product_categories if p in product_categories
                 ],
+                help="Filters campaign promoted products.",
             )
 
     st.divider()

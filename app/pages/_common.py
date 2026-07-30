@@ -6,6 +6,11 @@ from collections.abc import Callable
 
 import pandas as pd
 import streamlit as st
+from src.analytics.filter_views import (
+    FilterSelection,
+    apply_campaign_filters,
+    customer_base_metrics,
+)
 from src.recommendations import generate_recommendations
 from src.recommendations.models import Recommendation
 
@@ -19,21 +24,73 @@ from app.components.layout import (
 from app.services.data_loader import FilterOptions, MartBundle, load_mart_bundle
 
 
+def to_selection(filters: FilterState) -> FilterSelection:
+    """Convert Streamlit filter state into an analytics selection."""
+    return FilterSelection(
+        reporting_month=filters.reporting_month,
+        start_month=filters.start_month,
+        end_month=filters.end_month,
+        regions=tuple(filters.regions),
+        value_segments=tuple(filters.segments),
+        account_types=tuple(filters.account_types),
+        product_categories=tuple(filters.product_categories),
+    )
+
+
 def load_page_marts(
     options: FilterOptions,
+    filters: FilterState,
     *,
     profile_name: str,
     title: str,
     subtitle: str,
 ) -> MartBundle | None:
-    """Render header/freshness and load marts, or show an empty state."""
+    """Render header/freshness/filter scope and load marts."""
     render_page_header(title, subtitle)
     render_data_freshness(list(options.mart_paths))
+    render_filter_scope_banner(filters)
     try:
         return load_mart_bundle(profile_name)
     except FileNotFoundError as exc:
         render_empty_state(str(exc))
         return None
+
+
+def render_filter_scope_banner(filters: FilterState) -> None:
+    """Show which filters are active and how they affect the page."""
+    selection = to_selection(filters)
+    chips: list[str] = [
+        f"Month: {filters.reporting_month}",
+        f"Trend: {filters.start_month} → {filters.end_month}",
+    ]
+    if selection.regions:
+        chips.append("Regions: " + ", ".join(selection.regions))
+    if selection.value_segments:
+        chips.append("Value segments: " + ", ".join(selection.value_segments))
+    if selection.account_types:
+        chips.append("Account types: " + ", ".join(selection.account_types))
+    if selection.product_categories:
+        chips.append("Products: " + ", ".join(selection.product_categories))
+    st.caption(" · ".join(chips))
+    if selection.regional_scope:
+        st.info(
+            "Region filter is active: revenue/subscriber KPIs and trends use the "
+            "selected regional slice. National churn / recharge / mobile-money "
+            "headline rates stay portfolio-level.",
+            icon="ℹ️",
+        )
+
+
+def render_base_composition(marts: MartBundle, filters: FilterState) -> None:
+    """Show dim_customer match rate when dimension filters are set."""
+    selection = to_selection(filters)
+    if not selection.has_dimension_filters or marts.customers.empty:
+        return
+    matched, total, share = customer_base_metrics(marts.customers, selection)
+    st.caption(
+        f"Customer base in filter scope: **{matched:,}** of {total:,} "
+        f"({share:.1f}%) from dim_customer."
+    )
 
 
 def page_recommendations(
@@ -43,6 +100,11 @@ def page_recommendations(
     module: str | None = None,
 ) -> list[Recommendation]:
     """Generate recommendations and optionally keep one module."""
+    selection = to_selection(filters)
+    campaign = apply_campaign_filters(marts.campaign, selection)
+    regional = marts.regional
+    if selection.regions:
+        regional = regional[regional["region"].astype(str).isin(selection.regions)]
     recommendations = generate_recommendations(
         reporting_month=filters.reporting_month,
         executive_mart=marts.executive,
@@ -50,8 +112,8 @@ def page_recommendations(
         subscriber_mart=marts.subscriber,
         churn_mart=marts.churn,
         recharge_mart=marts.recharge,
-        regional_mart=marts.regional,
-        campaign_mart=marts.campaign,
+        regional_mart=regional,
+        campaign_mart=campaign if not campaign.empty else marts.campaign,
     )
     if filters.regions:
         recommendations = [

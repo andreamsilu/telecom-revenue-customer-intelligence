@@ -7,7 +7,11 @@ import streamlit as st
 
 from app.components.filters import FilterState
 from app.components.insight_panel import render_insight_panel
-from app.pages._common import load_page_marts, page_recommendations
+from app.pages._common import (
+    load_page_marts,
+    page_recommendations,
+    render_base_composition,
+)
 from app.services.data_loader import FilterOptions
 
 
@@ -20,6 +24,7 @@ def render_executive_recommendations(
     """List deterministic recommendations with priority and department."""
     marts = load_page_marts(
         options,
+        filters,
         profile_name=profile_name,
         title="Executive Recommendations",
         subtitle="Metric-supported Finding → Impact → Action queue for leadership.",
@@ -27,6 +32,7 @@ def render_executive_recommendations(
     if marts is None:
         return
 
+    render_base_composition(marts, filters)
     recommendations = page_recommendations(marts, filters)
     st.subheader("KPI summary")
     c1, c2, c3, c4 = st.columns(4)
@@ -43,7 +49,7 @@ def render_executive_recommendations(
 
     st.subheader("Priority queue")
     if not recommendations:
-        st.info("No recommendations fired for this reporting month.")
+        st.info("No recommendations fired for this reporting month / filter scope.")
         return
 
     render_insight_panel(recommendations[0])
