@@ -1,6 +1,6 @@
 # Phase 6 — ETL, Dimensions, Facts, and Analytical Marts
 
-**Status:** Not started  
+**Status:** Complete  
 **Depends on:** [Phase 5](phase-05.md)  
 **Next:** [Phase 7](phase-07.md)
 
@@ -51,12 +51,12 @@ Outputs under `data/processed/` (Parquet).
 
 ## Acceptance Criteria
 
-- [ ] Pipeline runs end-to-end for `development`
-- [ ] Dimensions and facts have documented grains and unique keys
-- [ ] Marts include required comparison columns where applicable
-- [ ] Revenue and subscriber reconciliations pass within tolerance
-- [ ] Critical validation failures yield non-zero exit codes in strict mode
-- [ ] Quality checks pass
+- [x] Pipeline runs end-to-end for `development`
+- [x] Dimensions and facts have documented grains and unique keys
+- [x] Marts include required comparison columns where applicable
+- [x] Revenue and subscriber reconciliations pass within tolerance
+- [x] Critical validation failures yield non-zero exit codes in strict mode
+- [x] Quality checks pass
 
 ## Verification Commands
 

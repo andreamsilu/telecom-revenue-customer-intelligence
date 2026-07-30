@@ -64,9 +64,9 @@ Default reporting month: **December 2025**.
 
 ## Current Status
 
-**Phase 5 complete:** customer events and monthly lifecycle snapshots with inactivity-derived statuses and value segments.
+**Phase 6 complete:** ETL pipeline producing dimensions, facts, and analytical marts with MoM/YoY/rolling/YTD comparisons.
 
-Not yet implemented: ETL marts, analytics services, recommendation engine, or analytical Streamlit pages.
+Not yet implemented: analytics services, recommendation engine, or analytical Streamlit pages.
 
 ## Local Setup
 
