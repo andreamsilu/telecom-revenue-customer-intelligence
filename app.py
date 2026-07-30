@@ -44,7 +44,13 @@ def main() -> None:
 
     st.sidebar.markdown(f"## {settings.project_name}")
     st.sidebar.caption(f"Profile: `{profile}` · Synthetic Tanzanian telecom data")
-    page = st.sidebar.radio("Navigate", list(PAGES.keys()), index=0)
+    st.sidebar.markdown("### Navigate")
+    page = st.sidebar.radio(
+        "Page",
+        list(PAGES.keys()),
+        index=0,
+        label_visibility="collapsed",
+    )
 
     if not marts_available(profile):
         render_empty_state(

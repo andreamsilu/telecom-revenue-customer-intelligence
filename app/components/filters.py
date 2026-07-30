@@ -1,4 +1,4 @@
-"""Global filter state and sidebar controls."""
+"""Global filter state and top-of-page controls."""
 
 from __future__ import annotations
 
@@ -56,69 +56,86 @@ def render_global_filters(
     account_types: list[str],
     product_categories: list[str],
 ) -> FilterState:
-    """Render sidebar filters and return the active filter state."""
+    """Render filters at the top of the main page and return active state."""
     defaults = default_filters(settings, available_months)
     if "filter_defaults" not in st.session_state:
         st.session_state["filter_defaults"] = defaults.as_dict()
         st.session_state["filters"] = defaults.as_dict()
 
-    st.sidebar.markdown("### Filters")
-    if st.sidebar.button("Reset filters", use_container_width=True):
-        st.session_state["filters"] = dict(st.session_state["filter_defaults"])
-        st.rerun()
-
     current = FilterState(**st.session_state["filters"])
     month_options = available_months or [defaults.reporting_month]
+
+    header_left, header_right = st.columns([6, 1])
+    with header_left:
+        st.markdown("### Filters")
+    with header_right:
+        if st.button("Reset filters", use_container_width=True):
+            st.session_state["filters"] = dict(st.session_state["filter_defaults"])
+            st.rerun()
+
     reporting_idx = (
         month_options.index(current.reporting_month)
         if current.reporting_month in month_options
         else len(month_options) - 1
     )
-    reporting_month = st.sidebar.selectbox(
-        "Reporting month",
-        options=month_options,
-        index=reporting_idx,
-    )
-    if len(month_options) == 1:
-        start_month = end_month = month_options[0]
-        st.sidebar.caption(f"Trend range: {start_month}")
-    else:
-        start_default = (
-            current.start_month
-            if current.start_month in month_options
-            else month_options[0]
-        )
-        end_default = (
-            current.end_month
-            if current.end_month in month_options
-            else month_options[-1]
-        )
-        start_month, end_month = st.sidebar.select_slider(
-            "Trend date range",
+    row1 = st.columns([1, 2, 1, 1])
+    with row1[0]:
+        reporting_month = st.selectbox(
+            "Reporting month",
             options=month_options,
-            value=(start_default, end_default),
+            index=reporting_idx,
         )
-    selected_regions = st.sidebar.multiselect(
-        "Region",
-        options=regions,
-        default=[r for r in current.regions if r in regions],
-        help="Empty selection means all regions.",
-    )
-    selected_segments = st.sidebar.multiselect(
-        "Customer segment",
-        options=segments,
-        default=[s for s in current.segments if s in segments],
-    )
-    selected_accounts = st.sidebar.multiselect(
-        "Account type",
-        options=account_types,
-        default=[a for a in current.account_types if a in account_types],
-    )
-    selected_products = st.sidebar.multiselect(
-        "Product category",
-        options=product_categories,
-        default=[p for p in current.product_categories if p in product_categories],
-    )
+    with row1[1]:
+        if len(month_options) == 1:
+            start_month = end_month = month_options[0]
+            st.caption(f"Trend range: {start_month}")
+        else:
+            start_default = (
+                current.start_month
+                if current.start_month in month_options
+                else month_options[0]
+            )
+            end_default = (
+                current.end_month
+                if current.end_month in month_options
+                else month_options[-1]
+            )
+            start_month, end_month = st.select_slider(
+                "Trend date range",
+                options=month_options,
+                value=(start_default, end_default),
+            )
+    with row1[2]:
+        selected_regions = st.multiselect(
+            "Region",
+            options=regions,
+            default=[r for r in current.regions if r in regions],
+            help="Empty selection means all regions.",
+        )
+    with row1[3]:
+        selected_segments = st.multiselect(
+            "Customer segment",
+            options=segments,
+            default=[s for s in current.segments if s in segments],
+        )
+
+    row2 = st.columns(3)
+    with row2[0]:
+        selected_accounts = st.multiselect(
+            "Account type",
+            options=account_types,
+            default=[a for a in current.account_types if a in account_types],
+        )
+    with row2[1]:
+        selected_products = st.multiselect(
+            "Product category",
+            options=product_categories,
+            default=[p for p in current.product_categories if p in product_categories],
+        )
+    with row2[2]:
+        st.caption("Empty multiselects include all values.")
+
+    st.divider()
 
     state = FilterState(
         reporting_month=str(reporting_month),
