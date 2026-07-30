@@ -1,6 +1,6 @@
 # Phase 11 — Portfolio Packaging and Final Hardening
 
-**Status:** Not started  
+**Status:** Complete  
 **Depends on:** [Phase 10](phase-10.md)  
 **Next:** None (project Version 1 complete)
 
@@ -29,12 +29,12 @@ Package the project for portfolio presentation: finalize README, diagrams, scree
 
 ## Acceptance Criteria
 
-- [ ] README enables a newcomer to set up, generate (or use demo data), run tests, and launch Streamlit
-- [ ] All phase docs reflect final status
-- [ ] Screenshots and diagrams checked in under an agreed docs/assets location
-- [ ] `pytest`, `ruff check .`, and `mypy src` pass
-- [ ] Synthetic-data disclaimer is prominent
-- [ ] Version 1 explicitly excludes ML and external APIs
+- [x] README enables a newcomer to set up, generate (or use demo data), run tests, and launch Streamlit
+- [x] All phase docs reflect final status
+- [x] Screenshots and diagrams checked in under an agreed docs/assets location
+- [x] `pytest`, `ruff check .`, and `mypy src` pass
+- [x] Synthetic-data disclaimer is prominent
+- [x] Version 1 explicitly excludes ML and external APIs
 
 ## Verification Commands
 

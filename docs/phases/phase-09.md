@@ -1,6 +1,6 @@
 # Phase 9 — Remaining Analytical Dashboard Pages
 
-**Status:** Not started  
+**Status:** Complete  
 **Depends on:** [Phase 8](phase-08.md)  
 **Next:** [Phase 10](phase-10.md)
 
@@ -38,13 +38,13 @@ Each page requires explicit approval before starting the next when requested by 
 
 ## Acceptance Criteria (per page)
 
-- [ ] KPI summary present
-- [ ] Trend analysis present
-- [ ] Segment or regional comparison present
-- [ ] Finding, business impact, and recommended action present
-- [ ] No KPI calculations inside the page file
-- [ ] Tests for any new service helpers
-- [ ] Ruff/pytest still pass after each page (or after the phase batch)
+- [x] KPI summary present
+- [x] Trend analysis present
+- [x] Segment or regional comparison present
+- [x] Finding, business impact, and recommended action present
+- [x] No KPI calculations inside the page file
+- [x] Tests for any new service helpers
+- [x] Ruff/pytest still pass after each page (or after the phase batch)
 
 ## Verification Commands
 

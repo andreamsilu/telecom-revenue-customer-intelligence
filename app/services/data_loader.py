@@ -40,7 +40,7 @@ class FilterOptions:
     mart_paths: tuple[Path, ...]
 
 
-@st.cache_data(show_spinner="Loading processed marts…")
+@st.cache_data(ttl=3600, show_spinner="Loading processed marts…")
 def load_mart_bundle(profile_name: str = "development") -> MartBundle:
     """Load analytical marts once per Streamlit session/cache key."""
     settings = _settings(profile_name)
@@ -57,7 +57,7 @@ def load_mart_bundle(profile_name: str = "development") -> MartBundle:
     )
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(ttl=3600, show_spinner=False)
 def load_filter_options(profile_name: str = "development") -> FilterOptions:
     """Load distinct values for global sidebar filters."""
     settings = _settings(profile_name)

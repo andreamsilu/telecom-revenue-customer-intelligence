@@ -1,6 +1,6 @@
 # Phase 10 — Performance Optimization and Deployment Datasets
 
-**Status:** Not started  
+**Status:** Complete  
 **Depends on:** [Phase 9](phase-09.md)  
 **Next:** [Phase 11](phase-11.md)
 
@@ -27,11 +27,11 @@ Make local demo and portfolio profiles practical: optimize IO and caching, prefe
 
 ## Acceptance Criteria
 
-- [ ] Executive Overview and key pages load from marts without full transaction scans
-- [ ] `demo` profile pipeline completes successfully on a developer machine
-- [ ] Documented commands to regenerate demo/portfolio artifacts
-- [ ] No regression in KPI reproducibility
-- [ ] Quality checks pass
+- [x] Executive Overview and key pages load from marts without full transaction scans
+- [x] `demo` profile pipeline completes successfully on a developer machine
+- [x] Documented commands to regenerate demo/portfolio artifacts
+- [x] No regression in KPI reproducibility
+- [x] Quality checks pass
 
 ## Verification Commands
 

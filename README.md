@@ -2,7 +2,7 @@
 
 **A Python-Based Executive Decision Support Platform for Telecommunications Operators in Tanzania**
 
-> **Disclaimer:** All data in this project is **synthetic**. This platform does not represent, imitate, or use confidential data from any real telecommunications operator.
+> **Disclaimer:** All data in this project is **synthetic**. This platform does not represent, imitate, or use confidential data from any real telecommunications operator. Version 1 excludes machine learning and external APIs.
 
 ---
 
@@ -14,24 +14,24 @@ This portfolio project simulates a Tanzanian telecom operator and turns syntheti
 
 The synthetic operator is growing subscribers, but revenue is growing more slowly than expected. Leadership needs to diagnose ARPU pressure, product mix shifts, churn, regional gaps, recharge behaviour, mobile money adoption, and campaign effectiveness.
 
-## Planned Platform Modules
+## Platform Modules (Streamlit)
 
-1. Executive Overview
-2. Subscriber Analytics
-3. Revenue Analytics
-4. Churn and Retention
-5. Recharge Analytics
-6. Mobile Money Analytics
-7. Campaign Analytics
-8. Regional Performance
-9. Executive Recommendations
+1. Executive Overview  
+2. Subscriber Analytics  
+3. Revenue Analytics  
+4. Churn and Retention  
+5. Recharge Analytics  
+6. Mobile Money Analytics  
+7. Campaign Analytics  
+8. Regional Performance  
+9. Executive Recommendations  
 
 ## Technology Stack
 
 Python 3.11+ · Pandas · NumPy · PyArrow · Pydantic · Faker · Plotly · Streamlit · pytest · Ruff · mypy
 
 - CSV for small reference data
-- Parquet for large datasets
+- Parquet for large datasets and analytical marts
 
 ## Project Structure
 
@@ -39,15 +39,15 @@ Python 3.11+ · Pandas · NumPy · PyArrow · Pydantic · Faker · Plotly · Str
 telecom-revenue-customer-intelligence/
 ├── app/                 # Streamlit UI (display only)
 ├── data/
-│   ├── raw/             # Generated raw datasets (not committed)
-│   ├── processed/       # Analytical outputs (not committed)
+│   ├── raw/             # Generated raw datasets (gitignored)
+│   ├── processed/       # Marts/facts (large facts gitignored; slim marts committed)
 │   ├── reference/       # Small reference datasets
-│   └── exports/         # Reports / extracts
-├── docs/                # Business and technical documentation
+│   └── exports/         # Optional extracts
+├── docs/                # Business, architecture, performance, phases
 ├── scripts/             # CLI entry points
-├── src/                 # Business logic, generation, ETL, analytics
-├── tests/               # Unit and integration tests
-├── app.py               # Streamlit entry point
+├── src/                 # Generation, ETL, analytics, recommendations
+├── tests/
+├── app.py
 ├── pyproject.toml
 └── requirements.txt
 ```
@@ -64,9 +64,7 @@ Default reporting month: **December 2025**.
 
 ## Current Status
 
-**Phase 8 complete:** Streamlit design system, global filters, shared components, and Executive Overview page (KPIs from `src/analytics`, recommendations from the engine).
-
-Not yet implemented: remaining analytical pages (Phase 9).
+**Version 1 complete (Phases 1–11):** full synthetic pipeline, ETL marts, analytics + recommendations, and the nine-module Streamlit dashboard.
 
 ## Local Setup
 
@@ -74,43 +72,34 @@ Not yet implemented: remaining analytical pages (Phase 9).
 python3.11 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+pip install -e ".[dev]"     # optional: pytest, ruff, mypy
 cp .env.example .env
 ```
 
-Optional editable install:
+## Generate Data (optional locally)
+
+Committed slim marts under `data/processed/` are enough to launch the dashboard. To regenerate from scratch (`development`):
 
 ```bash
-pip install -e ".[dev]"
+python -m scripts.generate_reference_data --profile development
+python -m scripts.generate_customers --profile development
+python -m scripts.generate_usage --profile development
+python -m scripts.generate_recharges --profile development
+python -m scripts.generate_mobile_money --profile development
+python -m scripts.generate_campaigns --profile development
+python -m scripts.generate_customer_events --profile development
+python -m scripts.run_pipeline --profile development
+python -m scripts.validate_data --profile development
 ```
 
-## Phase 1 Health Check
+See [`docs/performance.md`](docs/performance.md) for `demo` / `portfolio` notes.
+
+## Health Check & Dashboard
 
 ```bash
 python -m scripts.health_check --profile development
-```
-
-Expected outcome: configuration loads, data directories resolve, package imports succeed, exit code `0`.
-
-## Dashboard
-
-After processed marts exist (`python -m scripts.run_pipeline --profile development`):
-
-```bash
 streamlit run app.py
 ```
-
-Opens the Executive Overview with global filters, KPI cards, trends, and recommendations.
-
-### Streamlit Community Cloud
-
-If deploy fails building `pyarrow` (`cmake` missing / `cpython-314`), either:
-
-1. Prefer **Python 3.12** in the app’s **Advanced settings** (recommended; matches local tooling), or
-2. Redeploy after pulling latest `requirements.txt` (allows PyArrow 22+ which ships Python 3.14 wheels).
-
-Slim dashboard marts under `data/processed/` (KPI/regional/campaign/segment marts + key dims) are committed so the cloud app can load without regenerating raw data. Large facts/snapshots remain gitignored.
-
-Do not install `pytest` / `ruff` / `mypy` on Cloud — use `pip install -e ".[dev]"` only locally.
 
 ## Quality Commands
 
@@ -121,15 +110,35 @@ pytest
 mypy src
 ```
 
-## Documentation
+## Streamlit Community Cloud
 
-- [Phase index](docs/phases/README.md) (Phases 1–11)
-- [Business requirements](docs/business_requirements.md)
-- [KPI dictionary](docs/kpi_dictionary.md)
-- [Data dictionary](docs/data_dictionary.md)
-- [Synthetic data rules](docs/synthetic_data_rules.md)
-- [Churn methodology](docs/churn_methodology.md)
-- [Architecture](docs/architecture.md)
-- [Validation framework](docs/validation_framework.md)
-- [Implementation guide](implementation.md)
-# telecom-revenue-customer-intelligence
+1. Deploy from `main` with entry point `app.py`.
+2. Prefer **Python 3.12** in Advanced settings (avoids package build issues on newer runtimes).
+3. Slim dashboard marts are committed; large raw/fact files stay gitignored.
+
+## Documentation Map
+
+| Doc | Purpose |
+|-----|---------|
+| [`docs/architecture.md`](docs/architecture.md) | System architecture |
+| [`docs/performance.md`](docs/performance.md) | Caching, profiles, regenerate commands |
+| [`docs/kpi_dictionary.md`](docs/kpi_dictionary.md) | KPI definitions |
+| [`docs/churn_methodology.md`](docs/churn_methodology.md) | Lifecycle / churn rules |
+| [`docs/phases/`](docs/phases/README.md) | Phase delivery index |
+| [`docs/assets/screenshots/`](docs/assets/screenshots/README.md) | Screenshot pack checklist |
+| [`CHANGELOG.md`](CHANGELOG.md) | Version history |
+
+## Architecture (high level)
+
+```mermaid
+flowchart LR
+  Gen[Synthetic generators] --> Raw[data/raw]
+  Raw --> ETL[ETL dims/facts/marts]
+  ETL --> Marts[data/processed marts]
+  Marts --> Analytics[src/analytics]
+  Analytics --> Recs[src/recommendations]
+  Analytics --> UI[Streamlit app]
+  Recs --> UI
+```
+
+Business logic stays in `src/`. `app/` only loads marts and renders results.

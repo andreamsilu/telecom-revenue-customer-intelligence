@@ -12,8 +12,8 @@ Build order is fixed. Do not skip phases. Do not start the next phase without ex
 | 6 | [phase-06.md](phase-06.md) | ETL, dimensions, facts, marts | Complete |
 | 7 | [phase-07.md](phase-07.md) | Analytics services and recommendations | Complete |
 | 8 | [phase-08.md](phase-08.md) | Streamlit design system and Executive Overview | Complete |
-| 9 | [phase-09.md](phase-09.md) | Remaining analytical pages | Not started |
-| 10 | [phase-10.md](phase-10.md) | Performance and deployment datasets | Not started |
-| 11 | [phase-11.md](phase-11.md) | Portfolio packaging and final hardening | Not started |
+| 9 | [phase-09.md](phase-09.md) | Remaining analytical pages | Complete |
+| 10 | [phase-10.md](phase-10.md) | Performance and deployment datasets | Complete |
+| 11 | [phase-11.md](phase-11.md) | Portfolio packaging and final hardening | Complete |
 
 Master specification: [`implementation.md`](../../implementation.md)
