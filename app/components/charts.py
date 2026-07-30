@@ -10,12 +10,12 @@ import streamlit as st
 from app.components.formatting import format_tzs
 
 _FONT = "IBM Plex Sans, sans-serif"
+_TITLE_FONT = {"size": 14, "color": "#10231C", "family": _FONT}
 _CHART_LAYOUT = {
     "paper_bgcolor": "rgba(0,0,0,0)",
     "plot_bgcolor": "rgba(0,0,0,0)",
     "font": {"color": "#10231C", "family": _FONT, "size": 12},
     "margin": {"l": 48, "r": 24, "t": 52, "b": 40},
-    "title": {"font": {"size": 14, "color": "#10231C", "family": _FONT}},
     "legend": {
         "orientation": "h",
         "yanchor": "bottom",
@@ -31,8 +31,21 @@ def _show(fig: go.Figure) -> None:
     st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
 
+def _apply_layout(fig: go.Figure, **overrides: object) -> None:
+    """Apply shared chart styling without duplicate keyword collisions."""
+    layout = dict(_CHART_LAYOUT)
+    title = overrides.pop("title", None)
+    layout.update(overrides)
+    if title is not None:
+        layout["title"] = {"text": title, "font": _TITLE_FONT}
+    else:
+        # Keep title text from Plotly Express; only normalize typography.
+        layout["title"] = {"font": _TITLE_FONT}
+    fig.update_layout(**layout)
+
+
 def _finish_line(fig: go.Figure, *, color: str = "#0B6E4F") -> None:
-    fig.update_layout(**_CHART_LAYOUT, hovermode="x unified")
+    _apply_layout(fig, hovermode="x unified")
     fig.update_xaxes(showgrid=False, linecolor="#D7E3DC")
     fig.update_yaxes(gridcolor="#E8F0EC", zeroline=False)
     fig.update_traces(line_color=color, line_width=2.5, marker_size=6)
@@ -71,7 +84,7 @@ def render_regional_bar(frame: pd.DataFrame) -> None:
         labels={"total_revenue": "Revenue (TZS)", "region": "Region"},
         text=ordered["total_revenue"].map(lambda v: format_tzs(float(v))),
     )
-    fig.update_layout(**_CHART_LAYOUT)
+    _apply_layout(fig)
     fig.update_traces(
         marker_color="#0B6E4F",
         textposition="outside",
@@ -94,7 +107,7 @@ def render_segment_bar(frame: pd.DataFrame) -> None:
         title="Revenue by value segment",
         labels={"value_segment": "Segment", "total_revenue": "Revenue (TZS)"},
     )
-    fig.update_layout(**_CHART_LAYOUT)
+    _apply_layout(fig)
     fig.update_traces(marker_color="#1F7A5C")
     fig.update_xaxes(showgrid=False)
     fig.update_yaxes(gridcolor="#E8F0EC")
@@ -127,8 +140,8 @@ def render_subscriber_mix(frame: pd.DataFrame) -> None:
             line={"color": "#A85A2E", "width": 2.5},
         )
     )
-    fig.update_layout(
-        **_CHART_LAYOUT,
+    _apply_layout(
+        fig,
         title="Subscribers vs ARPU",
         yaxis={"title": "Subscribers", "gridcolor": "#E8F0EC", "zeroline": False},
         yaxis2={
@@ -195,7 +208,7 @@ def render_lifecycle_stack(frame: pd.DataFrame) -> None:
         labels={"reporting_month": "Month", "subscribers": "Subscribers"},
         color_discrete_sequence=["#0B6E4F", "#C4A035", "#A85A2E", "#6B7280"],
     )
-    fig.update_layout(**_CHART_LAYOUT)
+    _apply_layout(fig)
     _show(fig)
 
 
@@ -213,7 +226,7 @@ def render_campaign_roi_bar(frame: pd.DataFrame) -> None:
         title="Attributed campaign ROI",
         labels={"campaign_id": "Campaign", "roi_pct": "ROI %"},
     )
-    fig.update_layout(**_CHART_LAYOUT)
+    _apply_layout(fig)
     fig.update_traces(marker_color="#1F7A5C")
     _show(fig)
     st.caption(
@@ -242,7 +255,7 @@ def render_regional_metric_bar(
         title=title,
         labels={value_col: value_label, "region": "Region"},
     )
-    fig.update_layout(**_CHART_LAYOUT)
+    _apply_layout(fig)
     fig.update_traces(marker_color="#0B6E4F")
     _show(fig)
 
