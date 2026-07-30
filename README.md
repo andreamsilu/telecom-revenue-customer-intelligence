@@ -64,9 +64,9 @@ Default reporting month: **December 2025**.
 
 ## Current Status
 
-**Phase 2 complete:** reference datasets (calendar, regions, products) and customer master generation with validation and tests.
+**Phase 3 complete:** daily usage and recharge generation with catalogue-derived revenue, validation, and tests.
 
-Not yet implemented: usage/recharge generation, ETL, analytics services, recommendation engine, or analytical Streamlit pages.
+Not yet implemented: mobile money/campaigns, lifecycle snapshots, ETL, analytics services, recommendation engine, or analytical Streamlit pages.
 
 ## Local Setup
 

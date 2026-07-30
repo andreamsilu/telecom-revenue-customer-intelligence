@@ -1,0 +1,345 @@
+---
+description: Telecom Revenue & Customer Intelligence Platform Project Rules
+alwaysApply: true
+---
+
+# Project Identity
+
+Project Name:
+
+Telecom Revenue & Customer Intelligence Platform
+
+Subtitle:
+
+A Python-Based Executive Decision Support Platform for Telecommunications Operators in Tanzania.
+
+All data must be synthetic.
+
+Never imitate or reproduce any real telecom operator.
+
+Never use confidential or proprietary information.
+
+---
+
+# Development Philosophy
+
+Build the project phase by phase.
+
+Never build multiple phases without approval.
+
+Before every phase:
+
+1. Inspect repository.
+2. Explain implementation plan.
+3. List files to create or modify.
+4. Implement only requested phase.
+5. Run tests.
+6. Summarize changes.
+7. Wait for approval.
+
+---
+
+# Architecture
+
+Maintain strict separation between:
+
+- Data Generation
+- Validation
+- ETL
+- Analytics
+- Recommendation Engine
+- Streamlit UI
+
+Do not place business logic inside Streamlit pages.
+
+All business calculations belong in src/.
+
+---
+
+# Technology Stack
+
+Python 3.11+
+
+Pandas
+
+NumPy
+
+PyArrow
+
+Plotly
+
+Streamlit
+
+Pydantic
+
+Faker
+
+Pytest
+
+Ruff
+
+Mypy
+
+Python-dotenv
+
+CSV for reference data.
+
+Parquet for large datasets.
+
+Do not use:
+
+Excel
+
+AWS
+
+Power BI
+
+Machine Learning (Version 1)
+
+External APIs
+
+---
+
+# Coding Standards
+
+Always use:
+
+Type hints
+
+Docstrings
+
+Logging
+
+Pathlib
+
+Reusable modules
+
+Configuration-driven behavior
+
+Validation
+
+Deterministic random seeds
+
+Meaningful error messages
+
+Tests
+
+Avoid:
+
+Magic numbers
+
+Hard-coded paths
+
+Duplicate code
+
+Silent exceptions
+
+Files larger than 400 lines
+
+---
+
+# Data Rules
+
+Historical period:
+
+January 2024
+
+through
+
+December 2025
+
+24 complete months.
+
+Support:
+
+Month-over-Month
+
+Year-over-Year
+
+Rolling 3 Month Average
+
+Year-to-Date
+
+Current vs Previous Period
+
+---
+
+# Synthetic Data Rules
+
+The data should model realistic telecom behaviour.
+
+Relationships must exist.
+
+Examples:
+
+Urban customers use more mobile data.
+
+Rural customers use more voice.
+
+Students buy smaller data bundles.
+
+SMEs use more mobile money.
+
+Recharge frequency influences churn.
+
+Campaign targeting influences response.
+
+December has higher activity.
+
+January slows after holidays.
+
+Data revenue grows over time.
+
+Voice revenue slowly declines.
+
+Do not generate unrelated random columns.
+
+---
+
+# Customer Lifecycle
+
+Active
+
+Activity within 30 days.
+
+At Risk
+
+31–45 inactive days.
+
+Dormant
+
+46–59 inactive days.
+
+Churned
+
+60+ inactive days.
+
+Reactivated
+
+Activity after churn.
+
+Lifecycle must be derived from generated activity.
+
+---
+
+# Executive Recommendation Rules
+
+Recommendations must never be random.
+
+Each recommendation requires:
+
+Finding
+
+Supporting KPI
+
+Business Impact
+
+Recommended Action
+
+Priority
+
+Responsible Department
+
+Recommendations must always be supported by metrics.
+
+---
+
+# Dashboard Rules
+
+Every dashboard page must include:
+
+KPI Summary
+
+Trend Analysis
+
+Regional or Segment Comparison
+
+Business Finding
+
+Business Impact
+
+Recommended Action
+
+Avoid creating pages that only contain charts.
+
+---
+
+# Streamlit Rules
+
+Streamlit pages should only:
+
+Load data
+
+Call analytics services
+
+Display charts
+
+Display recommendations
+
+No KPI calculations inside page files.
+
+---
+
+# Testing
+
+Every business calculation must have tests.
+
+Every KPI must be reproducible.
+
+Validate:
+
+Dates
+
+Ranges
+
+Duplicates
+
+Relationships
+
+Referential Integrity
+
+Schema
+
+Business Rules
+
+---
+
+# Git Workflow
+
+One commit per completed phase.
+
+Commit messages:
+
+feat:
+
+fix:
+
+docs:
+
+test:
+
+perf:
+
+refactor:
+
+chore:
+
+Never mix unrelated changes.
+
+---
+
+# Cursor Behaviour
+
+When implementing work:
+
+Inspect before editing.
+
+Never overwrite files without checking.
+
+Explain assumptions.
+
+Prefer reusable code.
+
+Stop after completing the requested phase.
+
+Never continue automatically.

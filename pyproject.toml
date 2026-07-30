@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telecom-revenue-customer-intelligence"
+version = "0.1.0"
+description = "A Python-based executive decision support platform for telecommunications operators in Tanzania."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "Portfolio Project" },
+]
+dependencies = [
+    "pandas>=2.2,<3.0",
+    "numpy>=2.0,<3.0",
+    "pyarrow>=17.0,<21.0",
+    "streamlit>=1.40,<2.0",
+    "plotly>=5.24,<7.0",
+    "pydantic>=2.9,<3.0",
+    "pydantic-settings>=2.5,<3.0",
+    "python-dotenv>=1.0,<2.0",
+    "faker>=30.0,<40.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3,<9.0",
+    "pytest-cov>=5.0,<7.0",
+    "ruff>=0.7,<1.0",
+    "mypy>=1.13,<2.0",
+    "pandas-stubs>=2.2",
+    "types-python-dateutil>=2.9",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*", "app*", "scripts*"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+src = ["src", "app", "scripts", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q --strict-markers"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+fail_under = 0
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+ignore_missing_imports = true
+mypy_path = "."
+packages = ["src"]

@@ -1,0 +1,42 @@
+---
+description: Python Code Style
+alwaysApply: true
+---
+
+Use:
+
+PEP8
+
+Type hints
+
+Dataclasses or Pydantic where appropriate
+
+Pathlib
+
+Logging
+
+Meaningful docstrings
+
+Short functions
+
+Avoid:
+
+Nested logic
+
+Global variables
+
+Hard-coded paths
+
+Repeated code
+
+Prefer:
+
+Small reusable modules
+
+Pure functions
+
+Dependency injection where useful
+
+Readable code over clever code.
+
+Run Ruff formatting before considering work complete.
