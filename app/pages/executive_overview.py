@@ -42,7 +42,7 @@ def render_executive_overview(
         profile_name=profile_name,
         title="Executive Overview",
         subtitle=(
-            "National headline KPIs, trends, and metric-supported recommendations."
+            "National performance snapshot, trends, and priority actions."
         ),
     )
     if marts is None:

@@ -1,14 +1,17 @@
-"""Streamlit entry point for the Telecom Revenue & Customer Intelligence Platform."""
+"""Streamlit entry point — UmojaTel executive intelligence shell."""
 
 from __future__ import annotations
 
 import streamlit as st
-
 from app.components.filters import render_global_filters
 from app.components.layout import (
+    OPERATOR_NAME,
+    PRODUCT_NAME,
     inject_theme_css,
+    render_app_footer,
     render_empty_state,
     render_sidebar_brand,
+    render_sidebar_footer,
 )
 from app.pages.campaign_analytics import render_campaign_analytics
 from app.pages.churn_retention import render_churn_retention
@@ -36,10 +39,9 @@ PAGES = {
 
 
 def main() -> None:
-    """Render the application shell, global filters, and active page."""
+    """Render the production application shell."""
     st.set_page_config(
-        page_title="Telecom Revenue & Customer Intelligence",
-        page_icon="📡",
+        page_title=f"{OPERATOR_NAME} | {PRODUCT_NAME}",
         layout="wide",
         initial_sidebar_state="expanded",
     )
@@ -47,22 +49,21 @@ def main() -> None:
     settings = load_settings()
     profile = settings.profile_name
 
-    render_sidebar_brand(project_name=settings.project_name, profile=profile)
+    render_sidebar_brand(
+        reporting_month=settings.reporting_month.strftime("%Y-%m-%d")
+    )
     page = st.sidebar.radio(
-        "Page",
+        "Workspace",
         list(PAGES.keys()),
         index=0,
         label_visibility="collapsed",
     )
-    st.sidebar.divider()
-    st.sidebar.caption("Filters are at the top of each page.")
+    render_sidebar_footer()
 
     if not marts_available(profile):
         render_empty_state(
-            "Processed marts were not found in this environment. "
-            "Locally, run `python -m scripts.run_pipeline --profile development` "
-            "then reload. On Streamlit Community Cloud, ensure the committed "
-            "dashboard marts under `data/processed/` are present on `main`."
+            "Analytical datasets are unavailable. Contact the analytics platform "
+            "team or regenerate processed marts before continuing."
         )
         return
 
@@ -82,6 +83,7 @@ def main() -> None:
     )
 
     PAGES[page](filters, options, profile_name=profile)
+    render_app_footer()
 
 
 if __name__ == "__main__":

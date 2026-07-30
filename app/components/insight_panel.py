@@ -35,9 +35,10 @@ def render_insight_panel(recommendation: Recommendation | None) -> None:
     """Render the executive finding, impact, and recommended action."""
     st.subheader("Executive insight")
     if recommendation is None:
-        st.info(
-            "No metric-supported recommendations fired for this reporting month "
-            "under the current rules."
+        from app.components.layout import render_empty_state
+
+        render_empty_state(
+            "No priority insights for this reporting month and filter scope."
         )
         return
 

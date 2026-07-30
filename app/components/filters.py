@@ -82,11 +82,15 @@ def render_global_filters(
     label_list = [labels[m] for m in month_options]
     value_by_label = {labels[m]: m for m in month_options}
 
+    st.markdown('<div class="trci-filter-shell">', unsafe_allow_html=True)
     top_l, top_r = st.columns([6, 1])
     with top_l:
-        st.markdown("### Filters")
+        st.markdown(
+            '<div class="trci-filter-title">Reporting controls</div>',
+            unsafe_allow_html=True,
+        )
     with top_r:
-        if st.button("Reset filters", use_container_width=True):
+        if st.button("Reset", use_container_width=True):
             st.session_state["filters"] = dict(st.session_state["filter_defaults"])
             st.rerun()
 
@@ -96,7 +100,6 @@ def render_global_filters(
             "Reporting month",
             options=label_list,
             index=label_list.index(labels[current.reporting_month]),
-            help="KPI cards and comparisons use this month.",
         )
         reporting_month = value_by_label[reporting_label]
 
@@ -116,36 +119,35 @@ def render_global_filters(
             if start_default > end_default:
                 start_default = month_options[0]
             start_label, end_label = st.select_slider(
-                "Trend date range",
+                "Trend period",
                 options=label_list,
                 value=(labels[start_default], labels[end_default]),
-                help="Charts use this inclusive month range.",
             )
             start_month = value_by_label[start_label]
             end_month = value_by_label[end_label]
 
-    with st.expander("Dimension filters (optional — empty means all)", expanded=False):
+    with st.expander("Market & audience filters", expanded=False):
         c1, c2, c3, c4 = st.columns(4)
         with c1:
             selected_regions = st.multiselect(
                 "Region",
                 options=regions,
                 default=[r for r in current.regions if r in regions],
-                help="Scopes regional charts and revenue/subscriber KPIs.",
+                placeholder="All regions",
             )
         with c2:
             selected_segments = st.multiselect(
                 "Value segment",
                 options=segments,
                 default=[s for s in current.segments if s in segments],
-                help="Filters value-segment charts and base composition.",
+                placeholder="All segments",
             )
         with c3:
             selected_accounts = st.multiselect(
                 "Account type",
                 options=account_types,
                 default=[a for a in current.account_types if a in account_types],
-                help="Applied to customer-base composition from dim_customer.",
+                placeholder="All account types",
             )
         with c4:
             selected_products = st.multiselect(
@@ -154,10 +156,9 @@ def render_global_filters(
                 default=[
                     p for p in current.product_categories if p in product_categories
                 ],
-                help="Filters campaign promoted products.",
+                placeholder="All products",
             )
-
-    st.divider()
+    st.markdown("</div>", unsafe_allow_html=True)
 
     state = FilterState(
         reporting_month=str(reporting_month),

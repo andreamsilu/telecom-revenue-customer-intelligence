@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 from collections.abc import Callable
 
 import pandas as pd
@@ -45,9 +46,9 @@ def load_page_marts(
     title: str,
     subtitle: str,
 ) -> MartBundle | None:
-    """Render header/freshness/filter scope and load marts."""
-    render_page_header(title, subtitle)
-    render_data_freshness(list(options.mart_paths))
+    """Render header/scope and load marts."""
+    as_of = render_data_freshness(list(options.mart_paths))
+    render_page_header(title, subtitle, as_of=as_of)
     render_filter_scope_banner(filters)
     try:
         return load_mart_bundle(profile_name)
@@ -57,39 +58,67 @@ def load_page_marts(
 
 
 def render_filter_scope_banner(filters: FilterState) -> None:
-    """Show which filters are active and how they affect the page."""
+    """Show active scope as production chips (no developer notices)."""
     selection = to_selection(filters)
     chips: list[str] = [
-        f"Month: {filters.reporting_month}",
-        f"Trend: {filters.start_month} → {filters.end_month}",
+        f'<span class="trci-chip">{_month_chip(filters.reporting_month)}</span>',
+        (
+            f'<span class="trci-chip">Trend '
+            f"{_month_chip(filters.start_month)} – "
+            f"{_month_chip(filters.end_month)}</span>"
+        ),
     ]
     if selection.regions:
-        chips.append("Regions: " + ", ".join(selection.regions))
-    if selection.value_segments:
-        chips.append("Value segments: " + ", ".join(selection.value_segments))
-    if selection.account_types:
-        chips.append("Account types: " + ", ".join(selection.account_types))
-    if selection.product_categories:
-        chips.append("Products: " + ", ".join(selection.product_categories))
-    st.caption(" · ".join(chips))
-    if selection.regional_scope:
-        st.info(
-            "Region filter is active: revenue/subscriber KPIs and trends use the "
-            "selected regional slice. National churn / recharge / mobile-money "
-            "headline rates stay portfolio-level.",
-            icon="ℹ️",
+        chips.append(
+            '<span class="trci-chip">'
+            + html.escape(", ".join(selection.regions))
+            + "</span>"
         )
+    if selection.value_segments:
+        chips.append(
+            '<span class="trci-chip">'
+            + html.escape(", ".join(selection.value_segments))
+            + "</span>"
+        )
+    if selection.account_types:
+        chips.append(
+            '<span class="trci-chip">'
+            + html.escape(", ".join(selection.account_types))
+            + "</span>"
+        )
+    if selection.product_categories:
+        chips.append(
+            '<span class="trci-chip">'
+            + html.escape(", ".join(selection.product_categories))
+            + "</span>"
+        )
+    if selection.regional_scope:
+        chips.append(
+            '<span class="trci-chip trci-chip--warn">Regional scope active</span>'
+        )
+    st.markdown(
+        '<div class="trci-scope">' + "".join(chips) + "</div>",
+        unsafe_allow_html=True,
+    )
+
+
+def _month_chip(month: str) -> str:
+    import html as html_mod
+
+    return html_mod.escape(pd.Timestamp(month).strftime("%b %Y"))
 
 
 def render_base_composition(marts: MartBundle, filters: FilterState) -> None:
-    """Show dim_customer match rate when dimension filters are set."""
+    """Show customer-base coverage when dimension filters are set."""
     selection = to_selection(filters)
     if not selection.has_dimension_filters or marts.customers.empty:
         return
     matched, total, share = customer_base_metrics(marts.customers, selection)
-    st.caption(
-        f"Customer base in filter scope: **{matched:,}** of {total:,} "
-        f"({share:.1f}%) from dim_customer."
+    st.markdown(
+        f'<div class="trci-scope"><span class="trci-chip">'
+        f"Base coverage {matched:,} / {total:,} subscribers ({share:.1f}%)"
+        f"</span></div>",
+        unsafe_allow_html=True,
     )
 
 

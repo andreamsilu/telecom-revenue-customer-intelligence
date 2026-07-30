@@ -28,7 +28,7 @@ def render_executive_recommendations(
         filters,
         profile_name=profile_name,
         title="Executive Recommendations",
-        subtitle="Metric-supported Finding → Impact → Action queue for leadership.",
+        subtitle="Priority Finding → Impact → Action queue for leadership.",
     )
     if marts is None:
         return
@@ -64,7 +64,11 @@ def render_executive_recommendations(
 
     st.subheader("Priority queue")
     if not recommendations:
-        st.info("No recommendations fired for this reporting month / filter scope.")
+        from app.components.layout import render_empty_state
+
+        render_empty_state(
+            "No priority actions for this reporting month and filter scope."
+        )
         return
 
     render_insight_panel(recommendations[0])
@@ -72,31 +76,31 @@ def render_executive_recommendations(
     st.subheader("All recommendations")
     rows = [
         {
-            "priority": r.priority,
-            "module": r.module,
-            "department": r.responsible_department,
-            "finding": r.finding,
-            "impact": r.business_impact,
-            "action": r.recommended_action,
-            "metric": r.metric_name,
-            "value": r.metric_value,
-            "benchmark": r.benchmark,
-            "id": r.recommendation_id,
+            "Priority": r.priority,
+            "Module": r.module,
+            "Department": r.responsible_department,
+            "Finding": r.finding,
+            "Impact": r.business_impact,
+            "Action": r.recommended_action,
+            "Metric": r.metric_name,
+            "Value": r.metric_value,
+            "Benchmark": r.benchmark,
         }
         for r in recommendations
     ]
     st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
     departments = sorted({r.responsible_department for r in recommendations})
-    selected = st.multiselect("Filter by department", departments, default=departments)
+    selected = st.multiselect("Department", departments, default=departments)
     for rec in recommendations:
         if rec.responsible_department not in selected:
             continue
-        with st.expander(f"{rec.priority} · {rec.module} · {rec.recommendation_id}"):
+        title = f"{rec.priority} · {rec.module} · {rec.responsible_department}"
+        with st.expander(title):
             st.markdown(f"**Finding:** {rec.finding}")
             st.markdown(f"**Business impact:** {rec.business_impact}")
             st.markdown(f"**Recommended action:** {rec.recommended_action}")
             st.caption(
-                f"{rec.metric_name}={rec.metric_value} · benchmark={rec.benchmark} · "
-                f"dept={rec.responsible_department}"
+                f"{rec.metric_name}: {rec.metric_value:,.2f} · "
+                f"Benchmark {rec.benchmark}"
             )

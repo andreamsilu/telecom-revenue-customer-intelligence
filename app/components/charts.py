@@ -1,4 +1,4 @@
-"""Plotly chart wrappers for Streamlit pages."""
+"""Plotly chart wrappers for Streamlit pages — production styling."""
 
 from __future__ import annotations
 
@@ -9,12 +9,33 @@ import streamlit as st
 
 from app.components.formatting import format_tzs
 
+_FONT = "IBM Plex Sans, sans-serif"
 _CHART_LAYOUT = {
     "paper_bgcolor": "rgba(0,0,0,0)",
     "plot_bgcolor": "rgba(0,0,0,0)",
-    "font": {"color": "#1A1F1C"},
-    "margin": {"l": 40, "r": 20, "t": 40, "b": 40},
+    "font": {"color": "#10231C", "family": _FONT, "size": 12},
+    "margin": {"l": 48, "r": 24, "t": 52, "b": 40},
+    "title": {"font": {"size": 14, "color": "#10231C", "family": _FONT}},
+    "legend": {
+        "orientation": "h",
+        "yanchor": "bottom",
+        "y": 1.02,
+        "xanchor": "left",
+        "x": 0,
+        "font": {"size": 11},
+    },
 }
+
+
+def _show(fig: go.Figure) -> None:
+    st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+
+
+def _finish_line(fig: go.Figure, *, color: str = "#0B6E4F") -> None:
+    fig.update_layout(**_CHART_LAYOUT, hovermode="x unified")
+    fig.update_xaxes(showgrid=False, linecolor="#D7E3DC")
+    fig.update_yaxes(gridcolor="#E8F0EC", zeroline=False)
+    fig.update_traces(line_color=color, line_width=2.5, marker_size=6)
 
 
 def render_revenue_trend(frame: pd.DataFrame) -> None:
@@ -27,15 +48,12 @@ def render_revenue_trend(frame: pd.DataFrame) -> None:
         x="reporting_month",
         y="total_revenue",
         markers=True,
-        title="Total revenue trend",
+        title="Total revenue",
         labels={"reporting_month": "Month", "total_revenue": "Revenue (TZS)"},
     )
-    fig.update_layout(**_CHART_LAYOUT, hovermode="x unified")
-    fig.update_traces(
-        hovertemplate="%{x}<br>%{y:,.0f} TZS<extra></extra>",
-        line_color="#0B6E4F",
-    )
-    st.plotly_chart(fig, use_container_width=True)
+    _finish_line(fig)
+    fig.update_traces(hovertemplate="%{x}<br>%{y:,.0f} TZS<extra></extra>")
+    _show(fig)
 
 
 def render_regional_bar(frame: pd.DataFrame) -> None:
@@ -49,13 +67,19 @@ def render_regional_bar(frame: pd.DataFrame) -> None:
         x="total_revenue",
         y="region",
         orientation="h",
-        title="Regional revenue comparison",
+        title="Regional revenue",
         labels={"total_revenue": "Revenue (TZS)", "region": "Region"},
         text=ordered["total_revenue"].map(lambda v: format_tzs(float(v))),
     )
     fig.update_layout(**_CHART_LAYOUT)
-    fig.update_traces(marker_color="#0B6E4F", textposition="outside")
-    st.plotly_chart(fig, use_container_width=True)
+    fig.update_traces(
+        marker_color="#0B6E4F",
+        textposition="outside",
+        cliponaxis=False,
+    )
+    fig.update_xaxes(showgrid=True, gridcolor="#E8F0EC")
+    fig.update_yaxes(showgrid=False)
+    _show(fig)
 
 
 def render_segment_bar(frame: pd.DataFrame) -> None:
@@ -71,13 +95,17 @@ def render_segment_bar(frame: pd.DataFrame) -> None:
         labels={"value_segment": "Segment", "total_revenue": "Revenue (TZS)"},
     )
     fig.update_layout(**_CHART_LAYOUT)
-    fig.update_traces(marker_color="#3D8B6E")
-    st.plotly_chart(fig, use_container_width=True)
+    fig.update_traces(marker_color="#1F7A5C")
+    fig.update_xaxes(showgrid=False)
+    fig.update_yaxes(gridcolor="#E8F0EC")
+    _show(fig)
 
 
 def render_subscriber_mix(frame: pd.DataFrame) -> None:
-    """Simple subscriber vs ARPU dual-axis trend when columns exist."""
+    """Subscriber vs ARPU dual-axis trend when columns exist."""
     if frame.empty or "arpu" not in frame.columns:
+        return
+    if "total_subscribers" not in frame.columns:
         return
     fig = go.Figure()
     fig.add_trace(
@@ -86,7 +114,7 @@ def render_subscriber_mix(frame: pd.DataFrame) -> None:
             y=frame["total_subscribers"],
             name="Subscribers",
             mode="lines+markers",
-            line={"color": "#0B6E4F"},
+            line={"color": "#0B6E4F", "width": 2.5},
         )
     )
     fig.add_trace(
@@ -96,17 +124,21 @@ def render_subscriber_mix(frame: pd.DataFrame) -> None:
             name="ARPU",
             mode="lines+markers",
             yaxis="y2",
-            line={"color": "#C45C26"},
+            line={"color": "#A85A2E", "width": 2.5},
         )
     )
     fig.update_layout(
         **_CHART_LAYOUT,
         title="Subscribers vs ARPU",
-        yaxis={"title": "Subscribers"},
-        yaxis2={"title": "ARPU (TZS)", "overlaying": "y", "side": "right"},
-        legend={"orientation": "h"},
+        yaxis={"title": "Subscribers", "gridcolor": "#E8F0EC", "zeroline": False},
+        yaxis2={
+            "title": "ARPU (TZS)",
+            "overlaying": "y",
+            "side": "right",
+            "showgrid": False,
+        },
     )
-    st.plotly_chart(fig, use_container_width=True)
+    _show(fig)
 
 
 def render_metric_trend(
@@ -129,9 +161,8 @@ def render_metric_trend(
         title=title,
         labels={"reporting_month": "Month", y_col: y_label},
     )
-    fig.update_layout(**_CHART_LAYOUT, hovermode="x unified")
-    fig.update_traces(line_color=color)
-    st.plotly_chart(fig, use_container_width=True)
+    _finish_line(fig, color=color)
+    _show(fig)
 
 
 def render_lifecycle_stack(frame: pd.DataFrame) -> None:
@@ -160,11 +191,12 @@ def render_lifecycle_stack(frame: pd.DataFrame) -> None:
         x="reporting_month",
         y="subscribers",
         color="lifecycle",
-        title="Subscriber lifecycle mix",
+        title="Lifecycle mix",
         labels={"reporting_month": "Month", "subscribers": "Subscribers"},
+        color_discrete_sequence=["#0B6E4F", "#C4A035", "#A85A2E", "#6B7280"],
     )
     fig.update_layout(**_CHART_LAYOUT)
-    st.plotly_chart(fig, use_container_width=True)
+    _show(fig)
 
 
 def render_campaign_roi_bar(frame: pd.DataFrame) -> None:
@@ -178,15 +210,15 @@ def render_campaign_roi_bar(frame: pd.DataFrame) -> None:
         plot,
         x="campaign_id",
         y="roi_pct",
-        title="Attributed campaign ROI (%)",
+        title="Attributed campaign ROI",
         labels={"campaign_id": "Campaign", "roi_pct": "ROI %"},
     )
     fig.update_layout(**_CHART_LAYOUT)
-    fig.update_traces(marker_color="#3D8B6E")
-    st.plotly_chart(fig, use_container_width=True)
+    fig.update_traces(marker_color="#1F7A5C")
+    _show(fig)
     st.caption(
-        "ROI uses campaign-attributed revenue and cost from the performance mart. "
-        "This is descriptive attribution, not a controlled causal uplift estimate."
+        "Attributed ROI compares campaign cost to attributed revenue "
+        "(descriptive; not a controlled uplift study)."
     )
 
 
@@ -212,7 +244,7 @@ def render_regional_metric_bar(
     )
     fig.update_layout(**_CHART_LAYOUT)
     fig.update_traces(marker_color="#0B6E4F")
-    st.plotly_chart(fig, use_container_width=True)
+    _show(fig)
 
 
 def render_regional_subscribers_bar(frame: pd.DataFrame) -> None:
