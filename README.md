@@ -108,6 +108,8 @@ If deploy fails building `pyarrow` (`cmake` missing / `cpython-314`), either:
 1. Prefer **Python 3.12** in the app’s **Advanced settings** (recommended; matches local tooling), or
 2. Redeploy after pulling latest `requirements.txt` (allows PyArrow 22+ which ships Python 3.14 wheels).
 
+Slim dashboard marts under `data/processed/` (KPI/regional/campaign/segment marts + key dims) are committed so the cloud app can load without regenerating raw data. Large facts/snapshots remain gitignored.
+
 Do not install `pytest` / `ruff` / `mypy` on Cloud — use `pip install -e ".[dev]"` only locally.
 
 ## Quality Commands

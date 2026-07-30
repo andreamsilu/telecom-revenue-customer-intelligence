@@ -1,4 +1,4 @@
-"""Presentation breakdowns derived from marts/snapshots (pure analytics)."""
+"""Presentation breakdowns derived from marts (pure analytics)."""
 
 from __future__ import annotations
 
@@ -34,21 +34,17 @@ def regional_revenue_slice(
 
 
 def revenue_by_value_segment(
-    snapshot: pd.DataFrame,
+    segment_mart: pd.DataFrame,
     *,
     reporting_month: str,
 ) -> pd.DataFrame:
-    """Aggregate monthly revenue by value segment for one reporting month."""
+    """Return value-segment revenue for one reporting month from the segment mart."""
     month = pd.Timestamp(reporting_month).strftime("%Y-%m-%d")
-    frame = snapshot[snapshot["reporting_month"].astype(str) == month]
+    frame = segment_mart[segment_mart["reporting_month"].astype(str) == month]
     if frame.empty:
         return pd.DataFrame(columns=["value_segment", "total_revenue", "customers"])
-    grouped = (
-        frame.groupby("value_segment", as_index=False)
-        .agg(
-            total_revenue=("monthly_revenue", "sum"),
-            customers=("customer_id", "nunique"),
-        )
+    return (
+        frame[["value_segment", "total_revenue", "customers"]]
         .sort_values("total_revenue", ascending=False)
+        .reset_index(drop=True)
     )
-    return grouped.reset_index(drop=True)

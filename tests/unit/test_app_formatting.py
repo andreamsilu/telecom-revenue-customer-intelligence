@@ -83,10 +83,9 @@ def test_breakdown_helpers() -> None:
     snapshot = pd.DataFrame(
         {
             "reporting_month": ["2025-12-01", "2025-12-01", "2025-11-01"],
-            "customer_id": ["A", "B", "C"],
-            "monthly_revenue": [10.0, 20.0, 99.0],
             "value_segment": ["High Value", "Mass", "High Value"],
-            "lifecycle_status": ["Active", "Active", "Active"],
+            "total_revenue": [10.0, 20.0, 99.0],
+            "customers": [1, 1, 1],
         }
     )
     by_seg = revenue_by_value_segment(snapshot, reporting_month="2025-12-01")

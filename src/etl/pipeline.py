@@ -32,6 +32,7 @@ from src.etl.marts_extra import (
     build_campaign_performance_mart,
     build_executive_kpi_mart,
     build_regional_performance_mart,
+    build_value_segment_monthly_mart,
 )
 from src.generator.io import read_frame, write_frame
 from src.utils.logging import get_logger
@@ -96,6 +97,7 @@ def run_etl_pipeline(settings: AppSettings) -> dict[str, Path]:
     mm_mart = build_mobile_money_monthly_mart(mobile_money)
     campaign_mart = build_campaign_performance_mart(campaigns, responses)
     regional_mart = build_regional_performance_mart(snapshot, customers)
+    segment_mart = build_value_segment_monthly_mart(snapshot)
     executive_mart = build_executive_kpi_mart(
         revenue_mart,
         subscriber_mart,
@@ -113,6 +115,7 @@ def run_etl_pipeline(settings: AppSettings) -> dict[str, Path]:
             "mobile_money_monthly_mart": mm_mart,
             "campaign_performance_mart": campaign_mart,
             "regional_performance_mart": regional_mart,
+            "value_segment_monthly_mart": segment_mart,
             "executive_kpi_mart": executive_mart,
         }
     )

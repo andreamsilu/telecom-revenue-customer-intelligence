@@ -94,7 +94,7 @@ def _render_comparisons(marts: MartBundle, filters: FilterState) -> None:
         render_regional_bar(regional)
     with right:
         segments = revenue_by_value_segment(
-            marts.snapshot,
+            marts.segment,
             reporting_month=filters.reporting_month,
         )
         render_segment_bar(segments)

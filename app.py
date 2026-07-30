@@ -30,9 +30,10 @@ def main() -> None:
 
     if not marts_available(profile):
         render_empty_state(
-            "Processed marts were not found. "
-            f"Run `python -m scripts.run_pipeline --profile {profile}` "
-            "then reload this page."
+            "Processed marts were not found in this environment. "
+            "Locally, run `python -m scripts.run_pipeline --profile development` "
+            "then reload. On Streamlit Community Cloud, ensure the committed "
+            "dashboard marts under `data/processed/` are present on `main`."
         )
         return
 

@@ -25,7 +25,7 @@ class MartBundle:
     mobile_money: pd.DataFrame
     regional: pd.DataFrame
     campaign: pd.DataFrame
-    snapshot: pd.DataFrame
+    segment: pd.DataFrame
 
 
 @dataclass(frozen=True)
@@ -53,7 +53,7 @@ def load_mart_bundle(profile_name: str = "development") -> MartBundle:
         mobile_money=load_mart(settings, "mobile_money_monthly_mart"),
         regional=load_mart(settings, "regional_performance_mart"),
         campaign=load_mart(settings, "campaign_performance_mart"),
-        snapshot=_load_snapshot_columns(settings),
+        segment=load_mart(settings, "value_segment_monthly_mart"),
     )
 
 
@@ -74,6 +74,7 @@ def load_filter_options(profile_name: str = "development") -> FilterOptions:
             "revenue_monthly_mart",
             "regional_performance_mart",
             "campaign_performance_mart",
+            "value_segment_monthly_mart",
         )
     )
     return FilterOptions(
@@ -94,23 +95,6 @@ def marts_available(profile_name: str = "development") -> bool:
 
 def _settings(profile_name: str) -> AppSettings:
     return load_settings(profile_name=profile_name)  # type: ignore[arg-type]
-
-
-def _load_snapshot_columns(settings: AppSettings) -> pd.DataFrame:
-    """Load only columns needed for executive segment breakdowns."""
-    path = processed_path(settings, "customer_monthly_snapshot")
-    columns = [
-        "reporting_month",
-        "customer_id",
-        "monthly_revenue",
-        "value_segment",
-        "lifecycle_status",
-    ]
-    frame = read_frame(path)
-    missing = [col for col in columns if col not in frame.columns]
-    if missing:
-        raise KeyError(f"Snapshot missing columns: {missing}")
-    return frame[columns].copy()
 
 
 def _distinct_from_dim(settings: AppSettings, name: str, column: str) -> list[str]:

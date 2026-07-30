@@ -83,6 +83,30 @@ def build_regional_performance_mart(
     return mart
 
 
+def build_value_segment_monthly_mart(snapshot: pd.DataFrame) -> pd.DataFrame:
+    """Aggregate monthly revenue and customers by value segment (dashboard-sized)."""
+    if snapshot.empty:
+        return pd.DataFrame(
+            columns=[
+                "reporting_month",
+                "value_segment",
+                "total_revenue",
+                "customers",
+            ]
+        )
+    mart = (
+        snapshot.groupby(["reporting_month", "value_segment"], as_index=False)
+        .agg(
+            total_revenue=("monthly_revenue", "sum"),
+            customers=("customer_id", "nunique"),
+        )
+        .sort_values(["reporting_month", "total_revenue"], ascending=[True, False])
+        .reset_index(drop=True)
+    )
+    logger.info("Built value_segment_monthly_mart (%s rows)", f"{len(mart):,}")
+    return mart
+
+
 def build_executive_kpi_mart(
     revenue_mart: pd.DataFrame,
     subscriber_mart: pd.DataFrame,

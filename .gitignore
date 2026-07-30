@@ -44,6 +44,19 @@ data/raw/*
 !data/raw/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
+# Slim dashboard marts + dims required by Streamlit Community Cloud
+!data/processed/executive_kpi_mart.parquet
+!data/processed/revenue_monthly_mart.parquet
+!data/processed/subscriber_monthly_mart.parquet
+!data/processed/churn_monthly_mart.parquet
+!data/processed/recharge_monthly_mart.parquet
+!data/processed/mobile_money_monthly_mart.parquet
+!data/processed/regional_performance_mart.parquet
+!data/processed/campaign_performance_mart.parquet
+!data/processed/value_segment_monthly_mart.parquet
+!data/processed/dim_customer.parquet
+!data/processed/dim_product.parquet
+!data/processed/dim_region.parquet
 data/exports/*
 !data/exports/.gitkeep
 
