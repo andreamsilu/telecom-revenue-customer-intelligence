@@ -10,6 +10,7 @@ from src.generator.engagement import (
     generate_campaign_datasets,
     generate_mobile_money_dataset,
 )
+from src.generator.lifecycle_pipeline import generate_lifecycle_datasets
 from src.generator.mobile_money import generate_mobile_money
 from src.generator.products import generate_products
 from src.generator.recharges import generate_recharges
@@ -18,6 +19,7 @@ from src.generator.reference import (
     generate_reference_datasets,
 )
 from src.generator.regions import generate_regions
+from src.generator.snapshot import generate_customer_monthly_snapshot
 from src.generator.transactions import (
     generate_recharge_dataset,
     generate_usage_dataset,
@@ -31,7 +33,9 @@ __all__ = [
     "generate_campaigns",
     "generate_customer_dataset",
     "generate_customers",
+    "generate_customer_monthly_snapshot",
     "generate_daily_usage",
+    "generate_lifecycle_datasets",
     "generate_mobile_money",
     "generate_mobile_money_dataset",
     "generate_products",

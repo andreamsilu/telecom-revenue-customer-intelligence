@@ -64,9 +64,9 @@ Default reporting month: **December 2025**.
 
 ## Current Status
 
-**Phase 4 complete:** mobile money transactions (fee-band revenue), campaign catalogue, and targeting-aware campaign responses.
+**Phase 5 complete:** customer events and monthly lifecycle snapshots with inactivity-derived statuses and value segments.
 
-Not yet implemented: lifecycle snapshots, ETL, analytics services, recommendation engine, or analytical Streamlit pages.
+Not yet implemented: ETL marts, analytics services, recommendation engine, or analytical Streamlit pages.
 
 ## Local Setup
 

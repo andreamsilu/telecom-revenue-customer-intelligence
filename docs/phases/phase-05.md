@@ -1,6 +1,6 @@
 # Phase 5 — Customer Events and Monthly Lifecycle Modelling
 
-**Status:** Not started  
+**Status:** Complete  
 **Depends on:** [Phase 4](phase-04.md)  
 **Next:** [Phase 6](phase-06.md)
 
@@ -60,13 +60,13 @@ newly_churned_in_month / active_at_month_start * 100
 
 ## Acceptance Criteria
 
-- [ ] Events and monthly snapshots generate for `development`
-- [ ] Lifecycle status matches inactivity days at boundaries
-- [ ] Reactivation only occurs after a prior churn classification
-- [ ] Snapshot grain is one row per customer per month
-- [ ] Declining recharge frequency correlates with elevated churn risk (tested relationship)
-- [ ] Methodology remains consistent with `docs/churn_methodology.md`
-- [ ] Quality checks pass
+- [x] Events and monthly snapshots generate for `development`
+- [x] Lifecycle status matches inactivity days at boundaries
+- [x] Reactivation only occurs after a prior churn classification
+- [x] Snapshot grain is one row per customer per month
+- [x] Declining recharge frequency correlates with elevated churn risk (tested relationship)
+- [x] Methodology remains consistent with `docs/churn_methodology.md`
+- [x] Quality checks pass
 
 ## Verification Commands
 

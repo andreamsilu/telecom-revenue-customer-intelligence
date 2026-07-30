@@ -7,6 +7,7 @@ from src.validation.engagement import (
     validate_campaigns,
     validate_mobile_money,
 )
+from src.validation.lifecycle import validate_customer_events, validate_snapshot
 from src.validation.reference import (
     ValidationReport,
     validate_calendar,
@@ -26,10 +27,12 @@ __all__ = [
     "validate_calendar",
     "validate_campaign_responses",
     "validate_campaigns",
+    "validate_customer_events",
     "validate_customers",
     "validate_daily_usage",
     "validate_mobile_money",
     "validate_products",
     "validate_recharges",
     "validate_regions",
+    "validate_snapshot",
 ]
