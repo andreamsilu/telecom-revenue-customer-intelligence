@@ -64,9 +64,9 @@ Default reporting month: **December 2025**.
 
 ## Current Status
 
-**Phase 7 complete:** reusable analytics KPI services and a deterministic recommendation engine (Finding → Impact → Action).
+**Phase 8 complete:** Streamlit design system, global filters, shared components, and Executive Overview page (KPIs from `src/analytics`, recommendations from the engine).
 
-Not yet implemented: Streamlit design system and analytical pages (Phases 8–9).
+Not yet implemented: remaining analytical pages (Phase 9).
 
 ## Local Setup
 
@@ -90,6 +90,16 @@ python -m scripts.health_check --profile development
 ```
 
 Expected outcome: configuration loads, data directories resolve, package imports succeed, exit code `0`.
+
+## Dashboard
+
+After processed marts exist (`python -m scripts.run_pipeline --profile development`):
+
+```bash
+streamlit run app.py
+```
+
+Opens the Executive Overview with global filters, KPI cards, trends, and recommendations.
 
 ## Quality Commands
 

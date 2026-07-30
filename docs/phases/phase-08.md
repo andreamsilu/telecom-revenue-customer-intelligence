@@ -1,6 +1,6 @@
 # Phase 8 — Streamlit Design System and Executive Overview
 
-**Status:** Not started  
+**Status:** Complete  
 **Depends on:** [Phase 7](phase-07.md)  
 **Next:** [Phase 9](phase-09.md)
 
@@ -45,12 +45,12 @@ Do not ship chart-only pages.
 
 ## Acceptance Criteria
 
-- [ ] `streamlit run app.py` loads Executive Overview against processed marts
-- [ ] Filters propagate to service calls
-- [ ] KPI values come from `src/analytics`, not page code
-- [ ] Finding → Impact → Action visible on the page
-- [ ] Empty/missing data states are handled cleanly
-- [ ] Quality checks pass
+- [x] `streamlit run app.py` loads Executive Overview against processed marts
+- [x] Filters propagate to service calls
+- [x] KPI values come from `src/analytics`, not page code
+- [x] Finding → Impact → Action visible on the page
+- [x] Empty/missing data states are handled cleanly
+- [x] Quality checks pass
 
 ## Verification Commands
 

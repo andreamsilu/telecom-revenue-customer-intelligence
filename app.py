@@ -1,37 +1,58 @@
-"""Streamlit entry point for the Telecom Revenue & Customer Intelligence Platform.
-
-Phase 1: placeholder only. Analytical pages are added in later phases.
-"""
+"""Streamlit entry point for the Telecom Revenue & Customer Intelligence Platform."""
 
 from __future__ import annotations
 
 import streamlit as st
+from app.components.filters import render_global_filters
+from app.components.layout import inject_theme_css, render_empty_state
+from app.pages.executive_overview import render_executive_overview
+from app.services.data_loader import load_filter_options, marts_available
+from src.config import load_settings
+
+PAGES = ("Executive Overview",)
 
 
 def main() -> None:
-    """Render the Phase 1 placeholder application shell."""
+    """Render the application shell, global filters, and active page."""
     st.set_page_config(
         page_title="Telecom Revenue & Customer Intelligence",
         page_icon="📡",
         layout="wide",
+        initial_sidebar_state="expanded",
     )
-    st.title("Telecom Revenue & Customer Intelligence Platform")
-    st.caption(
-        "A Python-Based Executive Decision Support Platform "
-        "for Telecommunications Operators in Tanzania."
-    )
-    st.info(
-        "Phase 1 scaffolding is complete. Analytical dashboard pages "
-        "will be added in later phases. All data in this project is synthetic."
-    )
-    st.markdown(
-        """
-        **Current status:** Project scaffolding, configuration, documentation,
-        and health-check tooling.
+    inject_theme_css()
+    settings = load_settings()
+    profile = settings.profile_name
 
-        **Next:** Reference datasets and customer master-data generation (Phase 2).
-        """
+    st.sidebar.markdown(f"## {settings.project_name}")
+    st.sidebar.caption(f"Profile: `{profile}` · Synthetic Tanzanian telecom data")
+    page = st.sidebar.radio("Navigate", PAGES, index=0)
+
+    if not marts_available(profile):
+        render_empty_state(
+            "Processed marts were not found. "
+            f"Run `python -m scripts.run_pipeline --profile {profile}` "
+            "then reload this page."
+        )
+        return
+
+    try:
+        options = load_filter_options(profile)
+    except FileNotFoundError as exc:
+        render_empty_state(str(exc))
+        return
+
+    filters = render_global_filters(
+        settings,
+        available_months=options.months,
+        regions=options.regions,
+        segments=options.segments,
+        account_types=options.account_types,
+        product_categories=options.product_categories,
     )
+
+    if page == "Executive Overview":
+        render_executive_overview(filters, options, profile_name=profile)
 
 
 if __name__ == "__main__":
