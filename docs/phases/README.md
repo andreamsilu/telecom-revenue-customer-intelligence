@@ -7,7 +7,7 @@ Build order is fixed. Do not skip phases. Do not start the next phase without ex
 | 1 | [phase-01.md](phase-01.md) | Scaffolding, config, docs, tooling, health check | Complete |
 | 2 | [phase-02.md](phase-02.md) | Reference data and customer master generation | Complete |
 | 3 | [phase-03.md](phase-03.md) | Usage and recharge generation | Complete |
-| 4 | [phase-04.md](phase-04.md) | Mobile money, campaigns, responses | Not started |
+| 4 | [phase-04.md](phase-04.md) | Mobile money, campaigns, responses | Complete |
 | 5 | [phase-05.md](phase-05.md) | Customer events and monthly lifecycle | Not started |
 | 6 | [phase-06.md](phase-06.md) | ETL, dimensions, facts, marts | Not started |
 | 7 | [phase-07.md](phase-07.md) | Analytics services and recommendations | Not started |

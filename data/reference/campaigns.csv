@@ -1,0 +1,9 @@
+campaign_id,campaign_name,start_date,end_date,campaign_cost,target_segment,target_region,campaign_channel,promoted_product,business_objective
+CMP-2024-BTS,Back to School,2024-09-01,2024-09-30,180000000.0,Youth,,SMS + Social,PRD-DATA-500MB-7D,Acquire and grow youth data usage
+CMP-2024-RAM,Ramadan,2024-03-10,2024-04-10,220000000.0,Mass Market,,USSD + SMS,PRD-COMBO-DAILY,Lift recharge and combo bundle uptake
+CMP-2024-XMS,Christmas,2024-12-01,2024-12-31,300000000.0,Mass Market,,App + SMS,PRD-DATA-5GB-30D,Maximise December revenue and engagement
+CMP-2025-DWE,Data Weekend,2025-05-01,2025-05-31,95000000.0,Digital First,Dar es Salaam,Mobile App,PRD-DATA-1GB-7D,Grow weekend data in urban digital segment
+CMP-2025-STU,Student Offer,2025-02-01,2025-02-28,110000000.0,Youth,,Campus + SMS,PRD-DATA-500MB-7D,Retain students with affordable data
+CMP-2025-SME,SME Promotion,2025-07-01,2025-07-31,160000000.0,SME,,Dealer + Account Manager,PRD-COMBO-SME-30D,"Grow SME voice, data, and mobile money"
+CMP-2025-XMS,Christmas,2025-12-01,2025-12-31,320000000.0,High Value,,App + SMS,PRD-DATA-15GB-30D,Protect high-value December ARPU
+CMP-2024-RUR,Rural Voice Boost,2024-06-01,2024-06-30,75000000.0,Rural,Tabora,Dealer + USSD,PRD-VOICE-100-7D,Stimulate rural voice recharge

@@ -1,6 +1,6 @@
 # Phase 4 — Mobile Money, Campaigns, and Responses
 
-**Status:** Not started  
+**Status:** Complete  
 **Depends on:** [Phase 3](phase-03.md)  
 **Next:** [Phase 5](phase-05.md)
 
@@ -53,12 +53,12 @@ Generate mobile money transactions, campaign master data, and campaign-response 
 
 ## Acceptance Criteria
 
-- [ ] MM, campaigns, and responses generate for `development`
-- [ ] Fees match configured bands for successful transactions
-- [ ] Response rates differ materially for relevant vs irrelevant targeting (tested)
-- [ ] Referential integrity to customers, regions, products/campaigns
-- [ ] Deterministic reproducibility
-- [ ] Quality checks pass
+- [x] MM, campaigns, and responses generate for `development`
+- [x] Fees match configured bands for successful transactions
+- [x] Response rates differ materially for relevant vs irrelevant targeting (tested)
+- [x] Referential integrity to customers, regions, products/campaigns
+- [x] Deterministic reproducibility
+- [x] Quality checks pass
 
 ## Verification Commands
 

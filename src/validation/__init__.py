@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+from src.validation.engagement import (
+    validate_campaign_responses,
+    validate_campaigns,
+    validate_mobile_money,
+)
 from src.validation.reference import (
     ValidationReport,
     validate_calendar,
@@ -19,8 +24,11 @@ __all__ = [
     "ValidationReport",
     "check_usage_seasonality",
     "validate_calendar",
+    "validate_campaign_responses",
+    "validate_campaigns",
     "validate_customers",
     "validate_daily_usage",
+    "validate_mobile_money",
     "validate_products",
     "validate_recharges",
     "validate_regions",

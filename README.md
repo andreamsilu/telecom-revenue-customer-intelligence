@@ -64,9 +64,9 @@ Default reporting month: **December 2025**.
 
 ## Current Status
 
-**Phase 3 complete:** daily usage and recharge generation with catalogue-derived revenue, validation, and tests.
+**Phase 4 complete:** mobile money transactions (fee-band revenue), campaign catalogue, and targeting-aware campaign responses.
 
-Not yet implemented: mobile money/campaigns, lifecycle snapshots, ETL, analytics services, recommendation engine, or analytical Streamlit pages.
+Not yet implemented: lifecycle snapshots, ETL, analytics services, recommendation engine, or analytical Streamlit pages.
 
 ## Local Setup
 
