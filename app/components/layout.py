@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from functools import lru_cache
 from pathlib import Path
 
 import pandas as pd
@@ -14,12 +15,17 @@ PRODUCT_NAME = "Revenue & Customer Intelligence"
 PRODUCT_SHORT = "RCI"
 
 _THEME_PATH = Path(__file__).resolve().parent.parent / "assets" / "theme.css"
-_THEME_CSS = _THEME_PATH.read_text(encoding="utf-8")
+
+
+@lru_cache(maxsize=1)
+def _load_theme_css() -> str:
+    """Load theme CSS on first use (avoid import-time file IO failures)."""
+    return _THEME_PATH.read_text(encoding="utf-8")
 
 
 def inject_theme_css() -> None:
     """Apply production executive theme (main canvas + dark operator sidebar)."""
-    st.markdown(f"<style>{_THEME_CSS}</style>", unsafe_allow_html=True)
+    st.markdown(f"<style>{_load_theme_css()}</style>", unsafe_allow_html=True)
 
 
 def render_sidebar_brand(*, reporting_month: str | None = None) -> None:
