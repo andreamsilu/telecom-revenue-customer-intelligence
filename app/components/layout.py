@@ -13,6 +13,8 @@ import streamlit as st
 OPERATOR_NAME = "UmojaTel"
 PRODUCT_NAME = "Revenue & Customer Intelligence"
 PRODUCT_SHORT = "RCI"
+# Bump when forcing Cloud redeploy verification.
+APP_BUILD = "2026.07.31-story"
 
 _THEME_PATH = Path(__file__).resolve().parent.parent / "assets" / "theme.css"
 
@@ -112,6 +114,6 @@ def render_app_footer() -> None:
     """Discreet legal footer for the main canvas."""
     st.markdown(
         f'<div class="trci-footer">{OPERATOR_NAME} {PRODUCT_NAME} · '
-        "Internal executive decision support · Confidential</div>",
+        f"Internal executive decision support · Confidential · Build {APP_BUILD}</div>",
         unsafe_allow_html=True,
     )
