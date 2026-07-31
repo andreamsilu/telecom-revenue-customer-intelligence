@@ -1,4 +1,4 @@
-"""Executive Overview Streamlit page."""
+"""Executive Overview Streamlit page — story first, then evidence."""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ from src.analytics.filter_views import (
     scoped_revenue_trend,
     segment_month_slice,
 )
+from src.analytics.narrative import build_month_story
 
 from app.components.charts import (
     render_regional_bar,
@@ -20,13 +21,14 @@ from app.components.charts import (
 from app.components.filters import FilterState
 from app.components.insight_panel import render_insight_panel
 from app.components.kpi_card import render_kpi_cards
+from app.components.narrative_panel import render_evidence_label, render_month_story
 from app.pages._common import (
     load_page_marts,
     page_recommendations,
     render_base_composition,
     to_selection,
 )
-from app.services.data_loader import FilterOptions, MartBundle
+from app.services.data_loader import FilterOptions
 
 
 def render_executive_overview(
@@ -35,21 +37,28 @@ def render_executive_overview(
     *,
     profile_name: str = "development",
 ) -> None:
-    """Render the Executive Overview page using analytics services."""
+    """Render story → insight → KPIs → evidence charts."""
     marts = load_page_marts(
         options,
         filters,
         profile_name=profile_name,
         title="Executive Overview",
-        subtitle=(
-            "National performance snapshot, trends, and priority actions."
-        ),
+        subtitle=("Month-in-review story, priority actions, then supporting evidence."),
     )
     if marts is None:
         return
 
     selection = to_selection(filters)
     render_base_composition(marts, filters)
+    recommendations = page_recommendations(marts, filters)
+
+    story = build_month_story(
+        marts.executive,
+        filters.reporting_month,
+        recommendations,
+    )
+    render_month_story(story)
+    render_insight_panel(recommendations[0] if recommendations else None)
 
     st.subheader("KPI summary")
     try:
@@ -64,6 +73,7 @@ def render_executive_overview(
         return
     render_kpi_cards(cards, columns=min(5, len(cards)))
 
+    render_evidence_label("Supporting evidence — trends")
     st.subheader("Trend analysis")
     trend = scoped_revenue_trend(
         national_mart=marts.executive,
@@ -76,6 +86,7 @@ def render_executive_overview(
     with right:
         render_subscriber_mix(trend)
 
+    render_evidence_label("Supporting evidence — comparisons")
     st.subheader("Regional and segment comparison")
     c1, c2 = st.columns(2)
     with c1:
@@ -83,16 +94,16 @@ def render_executive_overview(
     with c2:
         render_segment_bar(segment_month_slice(marts.segment, selection))
 
-    _render_recommendations(marts, filters)
+    _render_additional_recommendations(recommendations)
 
 
-def _render_recommendations(marts: MartBundle, filters: FilterState) -> None:
-    recommendations = page_recommendations(marts, filters)
-    render_insight_panel(recommendations[0] if recommendations else None)
-    if len(recommendations) > 1:
-        with st.expander(f"Additional recommendations ({len(recommendations) - 1})"):
-            for rec in recommendations[1:6]:
-                st.markdown(
-                    f"**{rec.priority} · {rec.module}** — {rec.finding}  \n"
-                    f"_{rec.recommended_action}_"
-                )
+def _render_additional_recommendations(recommendations: list) -> None:
+    """Show remaining recommendations after the lead story."""
+    if len(recommendations) <= 1:
+        return
+    with st.expander(f"Additional recommendations ({len(recommendations) - 1})"):
+        for rec in recommendations[1:6]:
+            st.markdown(
+                f"**{rec.priority} · {rec.module}** — {rec.finding}  \n"
+                f"_{rec.recommended_action}_"
+            )

@@ -12,6 +12,7 @@ from app.components.charts import (
     render_regional_subscribers_bar,
 )
 from app.components.filters import FilterState
+from app.components.narrative_panel import render_evidence_label
 from app.pages._common import (
     load_page_marts,
     render_base_composition,
@@ -29,7 +30,7 @@ def render_regional_performance(
     *,
     profile_name: str = "development",
 ) -> None:
-    """Render regional KPIs, trends for a focus region, and comparisons."""
+    """Render insight first, then regional KPIs and evidence charts."""
     marts = load_page_marts(
         options,
         filters,
@@ -43,12 +44,14 @@ def render_regional_performance(
     selection = to_selection(filters)
     render_base_composition(marts, filters)
     regional_all = apply_regional_filter(marts.regional, selection)
+    render_top_insight(marts, filters, module="Regional Performance")
 
     safe_kpi_section(
         "KPI summary",
         lambda: regional_kpi_cards(regional_all, filters.reporting_month),
     )
 
+    render_evidence_label()
     st.subheader("Trend analysis")
     focus_regions = (
         list(selection.regions)
@@ -85,5 +88,3 @@ def render_regional_performance(
         render_regional_bar(sliced)
     with c2:
         render_regional_subscribers_bar(sliced)
-
-    render_top_insight(marts, filters, module="Regional Performance")

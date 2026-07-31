@@ -8,6 +8,7 @@ from src.analytics.filter_views import segment_month_slice
 
 from app.components.charts import render_metric_trend, render_segment_bar
 from app.components.filters import FilterState
+from app.components.narrative_panel import render_evidence_label
 from app.pages._common import (
     load_page_marts,
     render_base_composition,
@@ -25,7 +26,7 @@ def render_mobile_money_analytics(
     *,
     profile_name: str = "development",
 ) -> None:
-    """Render mobile money KPIs, trends, and segment context."""
+    """Render insight first, then mobile money KPIs and evidence charts."""
     marts = load_page_marts(
         options,
         filters,
@@ -38,11 +39,13 @@ def render_mobile_money_analytics(
 
     selection = to_selection(filters)
     render_base_composition(marts, filters)
+    render_top_insight(marts, filters, module=None)
     safe_kpi_section(
         "KPI summary",
         lambda: mobile_money_kpi_cards(marts.mobile_money, filters.reporting_month),
     )
 
+    render_evidence_label()
     st.subheader("Trend analysis")
     trend = trend_frame(marts.mobile_money, filters)
     left, right = st.columns(2)
@@ -64,4 +67,3 @@ def render_mobile_money_analytics(
 
     st.subheader("Segment comparison")
     render_segment_bar(segment_month_slice(marts.segment, selection))
-    render_top_insight(marts, filters, module=None)

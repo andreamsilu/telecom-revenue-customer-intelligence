@@ -206,6 +206,43 @@ div[data-testid="stPlotlyChart"] {
   padding-top: 0.65rem; margin-top: 0.25rem;
 }
 
+.trci-story-card {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F3F8F5 100%);
+  border: 1px solid #D7E3DC;
+  border-radius: 0.9rem;
+  padding: 1.15rem 1.25rem;
+  margin-bottom: 0.85rem;
+  box-shadow: 0 1px 2px rgba(16, 35, 28, 0.04);
+}
+.trci-story-kicker {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: #0B6E4F; margin-bottom: 0.35rem;
+}
+.trci-story-headline {
+  color: #10231C; font-size: 1.15rem; font-weight: 700;
+  line-height: 1.35; letter-spacing: -0.02em; margin-bottom: 0.85rem;
+}
+.trci-story-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+@media (max-width: 900px) {
+  .trci-story-grid { grid-template-columns: 1fr; }
+}
+.trci-story-label {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; color: #0B6E4F; margin-bottom: 0.35rem;
+}
+.trci-story-list {
+  margin: 0; padding-left: 1.1rem; color: #10231C;
+  font-size: 0.9rem; line-height: 1.45;
+}
+.trci-story-muted { color: #5A6B62; font-size: 0.9rem; margin: 0; }
+.trci-story-close {
+  color: #5A6B62; font-size: 0.88rem; line-height: 1.45;
+  border-top: 1px solid #E8F0EC; padding-top: 0.7rem;
+}
+
 .trci-footer {
   margin-top: 1.75rem; padding-top: 0.85rem; border-top: 1px solid #D7E3DC;
   color: #7A8B82; font-size: 0.72rem;

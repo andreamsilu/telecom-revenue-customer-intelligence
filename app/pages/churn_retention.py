@@ -8,6 +8,7 @@ from src.analytics.filter_views import regional_month_slice
 
 from app.components.charts import render_metric_trend, render_regional_metric_bar
 from app.components.filters import FilterState
+from app.components.narrative_panel import render_evidence_label
 from app.pages._common import (
     load_page_marts,
     render_base_composition,
@@ -38,11 +39,13 @@ def render_churn_retention(
 
     selection = to_selection(filters)
     render_base_composition(marts, filters)
+    render_top_insight(marts, filters, module="Churn and Retention")
     safe_kpi_section(
         "KPI summary",
         lambda: retention_kpi_cards(marts.churn, filters.reporting_month),
     )
 
+    render_evidence_label()
     st.subheader("Trend analysis")
     trend = trend_frame(marts.churn, filters)
     left, right = st.columns(2)
@@ -69,4 +72,3 @@ def render_churn_retention(
         title="Newly churned customers by region",
         value_label="Newly churned",
     )
-    render_top_insight(marts, filters, module="Churn and Retention")

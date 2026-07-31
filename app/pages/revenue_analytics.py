@@ -18,6 +18,7 @@ from app.components.charts import (
     render_segment_bar,
 )
 from app.components.filters import FilterState
+from app.components.narrative_panel import render_evidence_label
 from app.pages._common import (
     load_page_marts,
     render_base_composition,
@@ -47,6 +48,7 @@ def render_revenue_analytics(
 
     selection = to_selection(filters)
     render_base_composition(marts, filters)
+    render_top_insight(marts, filters, module="Revenue Analytics")
 
     def _cards() -> list:
         national = revenue_kpi_cards(marts.revenue, filters.reporting_month)
@@ -58,6 +60,7 @@ def render_revenue_analytics(
 
     safe_kpi_section("KPI summary", _cards)
 
+    render_evidence_label()
     st.subheader("Trend analysis")
     trend = scoped_revenue_trend(
         national_mart=marts.revenue,
@@ -82,4 +85,3 @@ def render_revenue_analytics(
         render_regional_bar(regional_month_slice(marts.regional, selection))
     with c2:
         render_segment_bar(segment_month_slice(marts.segment, selection))
-    render_top_insight(marts, filters, module="Revenue Analytics")

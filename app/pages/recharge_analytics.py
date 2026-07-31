@@ -8,6 +8,7 @@ from src.analytics.filter_views import regional_month_slice
 
 from app.components.charts import render_metric_trend, render_regional_metric_bar
 from app.components.filters import FilterState
+from app.components.narrative_panel import render_evidence_label
 from app.pages._common import (
     load_page_marts,
     render_base_composition,
@@ -25,7 +26,7 @@ def render_recharge_analytics(
     *,
     profile_name: str = "development",
 ) -> None:
-    """Render recharge KPIs, trends, and regional recharge value."""
+    """Render insight first, then recharge KPIs and evidence charts."""
     marts = load_page_marts(
         options,
         filters,
@@ -38,11 +39,13 @@ def render_recharge_analytics(
 
     selection = to_selection(filters)
     render_base_composition(marts, filters)
+    render_top_insight(marts, filters, module="Recharge Analytics")
     safe_kpi_section(
         "KPI summary",
         lambda: recharge_kpi_cards(marts.recharge, filters.reporting_month),
     )
 
+    render_evidence_label()
     st.subheader("Trend analysis")
     trend = trend_frame(marts.recharge, filters)
     left, right = st.columns(2)
@@ -69,4 +72,3 @@ def render_recharge_analytics(
         title="Regional recharge value",
         value_label="Recharge value (TZS)",
     )
-    render_top_insight(marts, filters, module="Recharge Analytics")

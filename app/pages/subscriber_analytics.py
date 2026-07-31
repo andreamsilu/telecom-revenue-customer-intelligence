@@ -12,6 +12,7 @@ from app.components.charts import (
     render_regional_subscribers_bar,
 )
 from app.components.filters import FilterState
+from app.components.narrative_panel import render_evidence_label
 from app.pages._common import (
     load_page_marts,
     render_base_composition,
@@ -42,6 +43,7 @@ def render_subscriber_analytics(
 
     selection = to_selection(filters)
     render_base_composition(marts, filters)
+    render_top_insight(marts, filters, module="Subscriber Analytics")
 
     def _cards() -> list:
         national = subscriber_kpi_cards(marts.subscriber, filters.reporting_month)
@@ -53,6 +55,7 @@ def render_subscriber_analytics(
 
     safe_kpi_section("KPI summary", _cards)
 
+    render_evidence_label()
     st.subheader("Trend analysis")
     if selection.regional_scope:
         from src.analytics.filter_views import scoped_revenue_trend
@@ -83,4 +86,3 @@ def render_subscriber_analytics(
 
     st.subheader("Regional comparison")
     render_regional_subscribers_bar(regional_month_slice(marts.regional, selection))
-    render_top_insight(marts, filters, module="Subscriber Analytics")

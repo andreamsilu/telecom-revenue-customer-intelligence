@@ -8,6 +8,7 @@ from src.analytics.filter_views import apply_campaign_filters, segment_month_sli
 
 from app.components.charts import render_campaign_roi_bar, render_segment_bar
 from app.components.filters import FilterState
+from app.components.narrative_panel import render_evidence_label
 from app.pages._common import (
     load_page_marts,
     render_base_composition,
@@ -24,7 +25,7 @@ def render_campaign_analytics(
     *,
     profile_name: str = "development",
 ) -> None:
-    """Render campaign portfolio KPIs and attributed performance views."""
+    """Render insight first, then attributed campaign evidence."""
     marts = load_page_marts(
         options,
         filters,
@@ -42,11 +43,13 @@ def render_campaign_analytics(
         st.warning("No campaigns match the current dimension filters.")
         campaigns = marts.campaign.iloc[0:0]
 
+    render_top_insight(marts, filters, module="Campaign Analytics")
     safe_kpi_section(
         "KPI summary",
         lambda: campaign_kpi_summary(campaigns),
     )
 
+    render_evidence_label()
     st.subheader("Trend analysis")
     st.caption(
         "Campaigns are event-based rather than monthly. ROI below is descriptive "
@@ -78,5 +81,3 @@ def render_campaign_analytics(
             st.dataframe(display, use_container_width=True, hide_index=True)
     with right:
         render_segment_bar(segment_month_slice(marts.segment, selection))
-
-    render_top_insight(marts, filters, module="Campaign Analytics")

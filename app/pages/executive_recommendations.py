@@ -35,6 +35,18 @@ def render_executive_recommendations(
 
     render_base_composition(marts, filters)
     recommendations = page_recommendations(marts, filters)
+
+    st.subheader("Priority queue")
+    if not recommendations:
+        from app.components.layout import render_empty_state
+
+        render_empty_state(
+            "No priority actions for this reporting month and filter scope."
+        )
+        return
+
+    render_insight_panel(recommendations[0])
+
     st.subheader("KPI summary")
     render_summary_cards(
         [
@@ -61,17 +73,6 @@ def render_executive_recommendations(
         ],
         columns=4,
     )
-
-    st.subheader("Priority queue")
-    if not recommendations:
-        from app.components.layout import render_empty_state
-
-        render_empty_state(
-            "No priority actions for this reporting month and filter scope."
-        )
-        return
-
-    render_insight_panel(recommendations[0])
 
     st.subheader("All recommendations")
     rows = [

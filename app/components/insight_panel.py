@@ -33,7 +33,7 @@ _ACTION_ICON = (
 
 def render_insight_panel(recommendation: Recommendation | None) -> None:
     """Render the executive finding, impact, and recommended action."""
-    st.subheader("Executive insight")
+    st.subheader("Priority insight")
     if recommendation is None:
         from app.components.layout import render_empty_state
 
