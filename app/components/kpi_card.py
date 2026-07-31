@@ -16,7 +16,7 @@ _ICONS: dict[str, str] = {
         '<svg viewBox="0 0 24 24" aria-hidden="true">'
         '<path fill="none" stroke="currentColor" stroke-width="1.75" '
         'stroke-linecap="round" stroke-linejoin="round" '
-        'd="M12 3v18M7 8h7.5a2.5 2.5 0 0 1 0 5H9.5a2.5 2.5 0 0 0 0 5H17"/>'
+        'd="M4 19V9m5 10V5m5 14v-8m5 8V11"/>'
         "</svg>"
     ),
     "arpu": (
